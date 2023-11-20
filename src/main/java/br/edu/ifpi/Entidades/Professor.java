@@ -35,4 +35,12 @@ public class Professor {
     public void adicionarCurso(String curso){
         cursos.add(curso);
     }
+
+    public void setNome(String novoNome) {
+        this.nome = novoNome;
+    }
+
+    public void setEmail(String novoEmail) {
+        this.email = novoEmail;
+    }
 }
