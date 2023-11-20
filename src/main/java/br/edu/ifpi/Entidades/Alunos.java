@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Alunos {
-    private String nome;
+    protected String nome;
     private int id;
-    private String email;
+    protected String email;
     private List<String> cursos;
 
     public Alunos(String nome, int id, String email) {
