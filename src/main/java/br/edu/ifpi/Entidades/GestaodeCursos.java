@@ -16,8 +16,8 @@ public class GestaodeCursos {
     }
 
     public void atualizarCurso(String nome, String novoStatus){
-            for(Curso curso : cursos){
-                if(curso.getNome().equals(nome)){
+            for (Curso curso : cursos){
+                if (curso.getNome().equals(nome)){
                     curso.setStatus(novoStatus);
                     break;
                 }
@@ -25,7 +25,7 @@ public class GestaodeCursos {
         }
     
     public void visualizarCursos(){
-        for(Curso curso : cursos){
+        for (Curso curso : cursos){
             System.out.println("Nome: "+curso.getNome());
             System.out.println("Status: "+ curso.getStatus());
             System.out.println("Carga Horária: "+ curso.getCargaHoraria());

@@ -17,28 +17,28 @@ public class GestaoProfessores {
 
     public void associarProfessorACurso(int idProfessor, String curso){
         Professor professor = buscarProfessorPorId(idProfessor);
-        if(professor != null){
+        if (professor != null){
             professor.adicionarCurso(curso);
             System.out.println("Professor associado ao curso com sucesso.");
-        }else{
+        } else{
             System.out.println("Professor não encontrado");
         }
     }
 
     public void atualizarInformacoesProfessor(int id, String novoNome, String novoEmail){
         Professor professor = buscarProfessorPorId(id);
-        if(professor != null){
+        if (professor != null){
             professor.setNome(novoNome);
             professor.setEmail(novoEmail);
             System.out.println("informações do professor atualizadas com sucesso.");
-        }else{
+        } else{
             System.out.println("Professor não encontrado");
         }
     }
 
     public void visualizarListaProfessores(){
         System.out.println("Lista de Professores:");
-        for(Professor professor : professores){
+        for (Professor professor : professores){
             System.out.println("Nome: "+ professor.getNome());
             System.out.println("ID: "+ professor.getId());
             System.out.println("Email: "+ professor.getEmail());
@@ -47,8 +47,8 @@ public class GestaoProfessores {
     }
 
     private Professor buscarProfessorPorId(int id){
-        for(Professor professor : professores){
-            if(professor.getId() == id){
+        for (Professor professor : professores){
+            if (professor.getId() == id){
                 return professor;
             }
         }

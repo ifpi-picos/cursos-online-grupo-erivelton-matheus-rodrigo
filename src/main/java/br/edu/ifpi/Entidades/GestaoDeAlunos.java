@@ -23,9 +23,9 @@ public class GestaoDeAlunos {
             aluno.nome = novoNome;
             aluno.email = novoEmail;
             aluno.getCursos().clear();
-            aluno.getCursos.addAll(novosCursos);
+            aluno.getCursos().addAll(novosCursos);
             System.out.println("informações do aluno atualizadas com sucesso.");
-        }else{
+        } else{
             System.out.println("Aluno não encontrado");
         }
     }
@@ -38,18 +38,25 @@ public class GestaoDeAlunos {
             System.out.println("ID: "+ aluno.getId());
             System.out.println("Email: "+ aluno.getEmail());
             System.out.println("Cursos Matriculados: "+ aluno.getCursos());
-        }else{
+        } else{
             System.out.println("Aluno não encontrado.");
         }
     }
 
-    public void cancelarMatricula(int id, String curso){
+    public boolean cancelarMatricula(int id, String curso){
         Alunos aluno = buscarAlunoPorId(id);
         if(aluno != null){
-            System.out.println("Relatório de Desempenho do Aluno "+ aluno.getNome() + ":");
-            System.out.println("Cursos Matriculados: +" + aluno.getCursos());
-        }else{
+            if (aluno.getCursos().contains(curso)) {
+                aluno.getCursos().remove(curso);
+                System.out.println("Matrícula cancelada com sucesso para o curso: " + curso);
+                return true;
+            } else {
+                System.out.println("O aluno não está matriculado no curso especificado: " + curso);
+                return false;
+            }
+        } else {
             System.out.println("Aluno não encontrado.");
+            return false;
         }
     }
 
