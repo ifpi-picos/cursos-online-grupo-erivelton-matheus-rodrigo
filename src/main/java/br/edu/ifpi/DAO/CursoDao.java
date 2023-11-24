@@ -23,31 +23,25 @@ public class CursoDao {
     }
 
     public void cadastrarCurso(String nome, String status, int cargaHoraria) {
-        try {
-            PreparedStatement statement = this.connection.prepareStatement(
-                    "INSERT INTO cursos (nome, status, carga_horaria) VALUES (?, ?, ?)"
-            );
+        String sql = "INSERT INTO cursos (nome, status, carga_horaria) VALUES (?, ?, ?)";
+        try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
             statement.setString(1, nome);
             statement.setString(2, status);
             statement.setInt(3, cargaHoraria);
 
             statement.executeUpdate();
-            statement.close();
         } catch (SQLException e) {
             System.out.println("Erro ao cadastrar curso: " + e.getMessage());
         }
     }
 
     public void atualizarCurso(String nome, String novoStatus) {
-        try {
-            PreparedStatement statement = this.connection.prepareStatement(
-                    "UPDATE cursos SET status = ? WHERE nome = ?"
-            );
+        String sql = "UPDATE cursos SET status = ? WHERE nome = ?";
+        try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
             statement.setString(1, novoStatus);
             statement.setString(2, nome);
 
             statement.executeUpdate();
-            statement.close();
         } catch (SQLException e) {
             System.out.println("Erro ao atualizar curso: " + e.getMessage());
         }
@@ -55,9 +49,10 @@ public class CursoDao {
 
     public List<Cursos> listarCursosDisponiveis() {
         List<Cursos> cursos = new ArrayList<>();
-        try {
-            PreparedStatement statement = this.connection.prepareStatement("SELECT * FROM cursos");
-            ResultSet resultSet = statement.executeQuery();
+        String sql = "SELECT * FROM cursos";
+        try (PreparedStatement statement = this.connection.prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery()) {
+
             while (resultSet.next()) {
                 String nome = resultSet.getString("nome");
                 String status = resultSet.getString("status");
@@ -65,8 +60,6 @@ public class CursoDao {
                 Cursos curso = new Cursos(nome, status, cargaHoraria);
                 cursos.add(curso);
             }
-            resultSet.close();
-            statement.close();
         } catch (SQLException e) {
             System.out.println("Erro ao listar cursos disponíveis: " + e.getMessage());
         }
@@ -74,14 +67,10 @@ public class CursoDao {
     }
 
     public void deletarCurso(String nome) {
-        try {
-            PreparedStatement statement = this.connection.prepareStatement(
-                    "DELETE FROM cursos WHERE nome = ?"
-            );
+        String sql = "DELETE FROM cursos WHERE nome = ?";
+        try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
             statement.setString(1, nome);
-
             statement.executeUpdate();
-            statement.close();
         } catch (SQLException e) {
             System.out.println("Erro ao deletar curso: " + e.getMessage());
         }

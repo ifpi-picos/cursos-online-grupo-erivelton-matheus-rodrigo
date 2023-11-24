@@ -34,12 +34,16 @@ public class AlunoDao {
     }
 
     public void salvar(Alunos aluno) {
-        String sql = "INSERT INTO alunos (id, nome, email) VALUES (?, ?, ?)";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, aluno.getId());
-            ps.setString(2, aluno.getNome());
-            ps.setString(3, aluno.getEmail());
+        String sql = "INSERT INTO alunos (nome, email) VALUES (?, ?)";
+        try (PreparedStatement ps = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+            ps.setString(1, aluno.getNome());
+            ps.setString(2, aluno.getEmail());
             ps.executeUpdate();
+
+            ResultSet generatedKeys = ps.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                aluno.setId(generatedKeys.getInt(1));
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
