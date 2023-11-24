@@ -1,14 +1,17 @@
 package br.edu.ifpi.Entidades;
 
-public class Curso {
+public class Cursos {
     private String nome;
     private String status;
     private int cargaHoraria;
 
-    public Curso(String nome, String status, int cargaHoraria){
+    public Cursos(String nome, String status, int cargaHoraria){
         this.nome = nome;
         this.status = status;
         this.cargaHoraria = cargaHoraria;
+    }
+
+    public Cursos(int id, String nome2, String status2, int cargaHoraria2) {
     }
 
     public String getNome(){

@@ -7,7 +7,7 @@ public class Alunos {
     protected String nome;
     private int id;
     protected String email;
-    private List<String> cursos;
+    private List<Cursos> cursos;
 
     public Alunos(String nome, int id, String email) {
         this.nome = nome;
@@ -20,15 +20,44 @@ public class Alunos {
         return nome;
     }
 
+    public void setNome(String nome){
+        this.nome = nome;
+    }
+
     public int getId() {
         return id;
+    }
+
+    public void setId(int id){
+        this.id = id;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public List<String> getCursos() {
+    public void setEmail(String email){
+        this.email = email;
+    }
+
+    public List<Cursos> getCursos() {
         return cursos;
+    }
+
+    public void setCurso(List<Cursos> cursos){
+        this.cursos = cursos;
+    }
+
+    public void adicionarCurso(String string) {
+    }
+
+    public void adicionarNota(String string, double d) {
+    }
+
+    public Object getNotas() {
+        return null;
+    }
+
+    public void removerCurso(String nomeCurso) {
     }
 }

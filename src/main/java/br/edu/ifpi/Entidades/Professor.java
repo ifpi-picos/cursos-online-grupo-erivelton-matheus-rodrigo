@@ -43,4 +43,14 @@ public class Professor {
     public void setEmail(String novoEmail) {
         this.email = novoEmail;
     }
+
+    public void atualizarInformacoes(String nome, String email) {
+        this.nome = nome;
+        this.email = email;
+    }
+
+    @Override
+    public String toString() {
+        return "ID: " + id + " | Nome: " + nome + " | Email: " + email + " | Cursos: " + cursos;
+    }
 }
