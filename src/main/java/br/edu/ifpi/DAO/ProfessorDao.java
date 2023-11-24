@@ -16,7 +16,7 @@ public class ProfessorDao {
         List<Professor> professores = new ArrayList<>();
 
         try (Connection connection = DriverManager.getConnection(supabaseUrl)) {
-            String sql = "SELECT * FROM professores";
+            String sql = "SELECT id, nome, email FROM professores";
             PreparedStatement statement = connection.prepareStatement(sql);
             ResultSet resultSet = statement.executeQuery();
 
@@ -40,11 +40,10 @@ public class ProfessorDao {
 
     public void inserirProfessor(Professor professor) {
         try (Connection connection = DriverManager.getConnection(supabaseUrl)) {
-            String sql = "INSERT INTO professores (nome, id, email) VALUES (?, ?, ?)";
+            String sql = "INSERT INTO professores (nome, email) VALUES (?, ?)";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, professor.getNome());
-            statement.setInt(2, professor.getId());
-            statement.setString(3, professor.getEmail());
+            statement.setString(2, professor.getEmail());
 
             statement.executeUpdate();
             statement.close();
