@@ -16,12 +16,19 @@ public class Professor {
         this.cursos = new ArrayList<>();
     }
 
+    public Professor(int professorId, String nome2, String email2) {
+    }
+
     public String getNome(){
         return nome;
     }
-
+    
     public int getId(){
         return id;
+    }
+
+    public void setId(int id){
+        this.id = id;
     }
 
     public String getEmail(){
