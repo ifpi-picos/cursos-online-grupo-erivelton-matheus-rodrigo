@@ -42,15 +42,22 @@ public class ProfessorDao {
         try (Connection connection = DriverManager.getConnection(supabaseUrl)) {
             String sql = "INSERT INTO professores (nome, email) VALUES (?, ?)";
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, professor.getNome());
-            statement.setString(2, professor.getEmail());
+            
+            // Verifica se nome e email não estão nulos antes de inserir
+            if (professor.getNome() != null && professor.getEmail() != null) {
+                statement.setString(1, professor.getNome());
+                statement.setString(2, professor.getEmail());
 
-            statement.executeUpdate();
+                statement.executeUpdate();
+            } else {
+                System.out.println("Nome ou email do professor são nulos. Não é possível inserir no banco.");
+            }
+
             statement.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
+    } 
 
     public void atualizarProfessor(Professor professor) {
         try (Connection connection = DriverManager.getConnection(supabaseUrl)) {

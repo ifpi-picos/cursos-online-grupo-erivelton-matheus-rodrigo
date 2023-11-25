@@ -15,9 +15,9 @@ public class Main {
         int opcao;
         do {
             System.out.println("***** Menu Principal *****");
-            System.out.println("1. Aluno");
-            System.out.println("2. Professor");
-            System.out.println("3. Sair");
+            System.out.println("1 - Aluno");
+            System.out.println("2 - Professor");
+            System.out.println("0 - Sair");
             System.out.print("Escolha uma opção: ");
             opcao = scanner.nextInt();
 
@@ -28,14 +28,14 @@ public class Main {
                 case 2:
                     menuProfessor(scanner, professorDao);
                     break;
-                case 3:
+                case 0:
                     System.out.println("Programa Encerrado!");
-                    break;
+                    System.exit(0);
                 default:
                     System.out.println("Opção inválida! Escolha uma opção válida.");
                     break;
             }
-        } while (opcao != 3);
+        } while (opcao != 0);
 
         scanner.close();
     }
@@ -44,11 +44,11 @@ public class Main {
         int opcao;
         do {
             System.out.println("***** Menu Aluno *****");
-            System.out.println("1. Cadastrar Aluno");
-            System.out.println("2. Listar Alunos");
-            System.out.println("3. Atualizar Aluno");
-            System.out.println("4. Deletar Aluno");
-            System.out.println("0. Voltar ao Menu Principal");
+            System.out.println("1 - Cadastrar Aluno");
+            System.out.println("2 - Listar Alunos");
+            System.out.println("3 - Atualizar Aluno");
+            System.out.println("4 - Deletar Aluno");
+            System.out.println("0 - Voltar ao Menu Principal");
             System.out.print("Escolha uma opção: ");
             opcao = scanner.nextInt();
 
@@ -89,25 +89,25 @@ public class Main {
                     int idAlunoDeletar = scanner.nextInt();
                     alunoDao.deletar(idAlunoDeletar);
                     break;
-                case 5:
+                case 0:
                     System.out.println("Voltando para o Menu Principal");
                     break;
                 default:
                     System.out.println("Opção inválida! Escolha uma válida");
                     break;
             }
-        } while (opcao != 5);
+        } while (opcao != 0);
     }
 
     public static void menuProfessor(Scanner scanner, ProfessorDao professorDao) {
         int opcao;
         do {
             System.out.println("***** Menu Professor *****");
-            System.out.println("1. Listar Professores");
-            System.out.println("2. Inserir Professor");
-            System.out.println("3. Atualizar Professor");
-            System.out.println("4. Deletar Professor");
-            System.out.println("5. Voltar ao Menu Principal");
+            System.out.println("1 - Listar Professores");
+            System.out.println("2 - Inserir Professor");
+            System.out.println("3 - Atualizar Professor");
+            System.out.println("4 - Deletar Professor");
+            System.out.println("0 - Voltar ao Menu Principal");
             System.out.print("Escolha uma opção: ");
             opcao = scanner.nextInt();
 
@@ -129,7 +129,7 @@ public class Main {
                     String nomeProfessor = scanner.nextLine();
                     System.out.println("Digite o email do professor:");
                     String emailProfessor = scanner.nextLine();
-                    professorDao.inserirProfessor(new Professor(opcao, nomeProfessor, emailProfessor));
+                    professorDao.inserirProfessor(new Professor(nomeProfessor, opcao, emailProfessor));
                     break;
                 case 3:
                     System.out.println("Digite o ID do professor que deseja atualizar:");
@@ -139,7 +139,7 @@ public class Main {
                     String novoNomeProfessor = scanner.nextLine();
                     System.out.println("Digite o novo email do professor:");
                     String novoEmailProfessor = scanner.nextLine();
-                    Professor professorAtualizar = new Professor(idProfessorAtualizar, novoNomeProfessor, novoEmailProfessor);
+                    Professor professorAtualizar = new Professor(novoNomeProfessor, idProfessorAtualizar, novoEmailProfessor);
                     professorAtualizar.setId(idProfessorAtualizar);
                     professorDao.atualizarProfessor(professorAtualizar);
                     break;
@@ -148,13 +148,13 @@ public class Main {
                     int idProfessorDeletar = scanner.nextInt();
                     professorDao.deletarProfessor(idProfessorDeletar);
                     break;
-                case 5:
+                case 0:
                     System.out.println("Voltando para o Menu Principal");
                     break;
                 default:
-                    System.out.println("Opção inválida! Escolha uma válida");
+                    System.out.println("Opção inválida! Escolha uma opção válida");
                     break;
             }
-        } while (opcao != 5);
+        } while (opcao != 0);
     }
 }

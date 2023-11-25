@@ -15,10 +15,7 @@ public class Professor {
         this.email = email;
         this.cursos = new ArrayList<>();
     }
-
-    public Professor(int professorId, String nome2, String email2) {
-    }
-
+    
     public String getNome(){
         return nome;
     }

@@ -49,7 +49,7 @@ public class AutenticacaoDao {
                     String nome = resultSet.getString("nome");
 
                     System.out.println("Professor autenticado com sucesso!");
-                    return new Professor(professorId, nome, email);
+                    return new Professor(nome, professorId, email);
                 }
             }
         } catch (SQLException e) {
