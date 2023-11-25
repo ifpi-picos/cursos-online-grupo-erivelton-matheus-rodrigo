@@ -37,4 +37,8 @@ public class Cursos {
     public void setCargaHoraria(int cargaHoraria){
         this.cargaHoraria = cargaHoraria;
     }
+
+    public String getId() {
+        return null;
+    }
 }

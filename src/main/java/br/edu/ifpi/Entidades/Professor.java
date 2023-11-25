@@ -7,13 +7,13 @@ public class Professor {
     private String nome;
     private int id;
     private String email;
-    private List<String> cursos;
+    private List<Cursos> cursosMinistrados;
 
     public Professor(String nome, int id, String email){
         this.nome = nome;
         this.id = id;
         this.email = email;
-        this.cursos = new ArrayList<>();
+        this.cursosMinistrados = new ArrayList<>();
     }
     
     public String getNome(){
@@ -32,12 +32,12 @@ public class Professor {
         return email;
     }
 
-    public List<String> getCursos(){
-        return cursos;
+    public List<Cursos> getCursosMinistrados(){
+        return cursosMinistrados;
     }
 
-    public void adicionarCurso(String curso){
-        cursos.add(curso);
+    public void adicionarCursoMinistrado(Cursos curso){
+        cursosMinistrados.add(curso);
     }
 
     public void setNome(String novoNome) {
@@ -55,6 +55,13 @@ public class Professor {
 
     @Override
     public String toString() {
-        return "ID: " + id + " | Nome: " + nome + " | Email: " + email + " | Cursos: " + cursos;
+        return "ID: " + id + " | Nome: " + nome + " | Email: " + email + " | Cursos: " + cursosMinistrados;
+    }
+
+    public void adicionarCurso(Cursos curso) {
+    }
+
+    public List<Cursos> getCursos() {
+        return null;
     }
 }

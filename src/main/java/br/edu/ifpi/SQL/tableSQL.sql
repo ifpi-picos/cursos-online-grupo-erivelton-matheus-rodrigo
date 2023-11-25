@@ -16,3 +16,9 @@ CREATE TABLE cursos (
     status VARCHAR(50),
     carga_horaria INT
 );
+
+CREATE TABLE turma (
+    id_aluno INTEGER REFERENCES alunos(id),
+    nome_curso VARCHAR(100) REFERENCES cursos(nome),
+    nota_aluno FLOAT
+);

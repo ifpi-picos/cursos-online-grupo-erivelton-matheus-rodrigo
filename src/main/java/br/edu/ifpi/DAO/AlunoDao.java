@@ -13,7 +13,7 @@ import br.edu.ifpi.Entidades.Alunos;
 public class AlunoDao {
     private Connection connection;
 
-    public AlunoDao() {
+    public AlunoDao(Connection conexao) {
         String supabaseUrl = "jdbc:postgresql://db.wchdzdurkzceccavsubp.supabase.co:5432/postgres?user=postgres&password=Cocarato05!";
 
         try {
