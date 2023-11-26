@@ -16,23 +16,24 @@ public class ProfessorDao {
         this.connection = connection;
     }
 
-    public void inserirProfessor(Professor professor, Connection connection) {
+    public void inserirProfessor(Professor professor) {
         try {
-            String sql = "INSERT INTO professores (nome, email) VALUES (?, ?)";
-            PreparedStatement statement = connection.prepareStatement(sql);
-            
-            statement.setString(1, professor.getNome());
-            statement.setString(2, professor.getEmail());
-
-            statement.executeUpdate();
-            statement.close();
+            if (connection != null) {
+                PreparedStatement stmt = connection.prepareStatement("INSERT INTO professores (nome, email) VALUES (?, ?)");
+                stmt.setString(1, professor.getNome());
+                stmt.setString(2, professor.getEmail());
+                stmt.executeUpdate();
+                stmt.close();
+            } else {
+                System.out.println("A conexão com o banco de dados é nula.");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    } 
+    }
 
     public void atualizarProfessor(Professor professor) {
-        try (Connection connection = this.connection) {
+        try {
             String sql = "UPDATE professores SET nome = ?, email = ? WHERE id = ?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, professor.getNome());
@@ -47,7 +48,7 @@ public class ProfessorDao {
     }
 
     public void deletarProfessor(int id) {
-        try (Connection connection = this.connection) {
+        try {
             String sql = "DELETE FROM professores WHERE id = ?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setInt(1, id);
@@ -59,24 +60,25 @@ public class ProfessorDao {
         }
     }
 
-    public List<Professor> listarProfessores() throws SQLException {
-    List<Professor> professores = new ArrayList<>();
+    public List<Professor> listarProfessores() {
+        List<Professor> professores = new ArrayList<>();
 
-    try (Connection connection = this.connection) {
-        String sql = "SELECT * FROM professores";
-        PreparedStatement statement = connection.prepareStatement(sql);
-        ResultSet resultSet = statement.executeQuery();
+        try {
+            String sql = "SELECT * FROM professores";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            ResultSet resultSet = statement.executeQuery();
 
-        while (resultSet.next()) {
-            int idProfessor = resultSet.getInt("id");
-            String nomeProfessor = resultSet.getString("nome");
-            String emailProfessor = resultSet.getString("email");
+            while (resultSet.next()) {
+                int idProfessor = resultSet.getInt("id");
+                String nomeProfessor = resultSet.getString("nome");
+                String emailProfessor = resultSet.getString("email");
 
-            Professor professor = new Professor(nomeProfessor, idProfessor, emailProfessor);
-            professores.add(professor);
+                Professor professor = new Professor(nomeProfessor, idProfessor, emailProfessor);
+                professores.add(professor);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+        return professores;
     }
-    
-    return professores;
-}
 }

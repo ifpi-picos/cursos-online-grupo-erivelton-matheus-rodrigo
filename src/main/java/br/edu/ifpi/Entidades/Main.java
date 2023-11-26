@@ -27,38 +27,26 @@ public class Main {
             int opcao;
             do {
                 System.out.println("***** Menu Principal *****");
-                System.out.println("1 - Aluno");
-                System.out.println("2 - Professor");
+                System.out.println("1 - Cadastro de Aluno");
+                System.out.println("2 - Cadastro de Professor");
+                System.out.println("3 - Acesso de Aluno");
+                System.out.println("4 - Acesso de Professor");
                 System.out.println("0 - Sair");
                 System.out.print("Escolha uma opção: ");
                 opcao = scanner.nextInt();
 
                 switch (opcao) {
                     case 1:
-                        System.out.println("Digite o email do aluno:");
-                        String emailAluno = scanner.next();
-                        System.out.println("Digite o ID do aluno:");
-                        int idAluno = scanner.nextInt();
-                        Alunos alunoAutenticado = autenticacaoDao.autenticarAluno(emailAluno, idAluno);
-
-                        if (alunoAutenticado != null) {
-                            menuAluno(scanner, alunoDao, alunoAutenticado);
-                        } else {
-                            System.out.println("Autenticação falhou. Verifique suas credenciais.");
-                        }
+                        cadastrarAluno(scanner, alunoDao);
                         break;
                     case 2:
-                        System.out.println("Digite o email do professor:");
-                        String emailProfessor = scanner.next();
-                        System.out.println("Digite o ID do professor:");
-                        int idProfessor = scanner.nextInt();
-                        Professor professorAutenticado = autenticacaoDao.autenticarProfessor(emailProfessor, idProfessor);
-
-                        if (professorAutenticado != null) {
-                            menuProfessor(scanner, professorDao, professorAutenticado, cursoDao);
-                        } else {
-                            System.out.println("Autenticação falhou. Verifique suas credenciais.");
-                        }
+                        cadastrarProfessor(scanner, professorDao);
+                        break;
+                    case 3:
+                        acessarAluno(scanner, autenticacaoDao, alunoDao);
+                        break;
+                    case 4:
+                        acessarProfessor(scanner, autenticacaoDao, professorDao, cursoDao);
                         break;
                     case 0:
                         System.out.println("Programa Encerrado!");
@@ -83,6 +71,61 @@ public class Main {
         }
     }
 
+    private static void cadastrarAluno(Scanner scanner, AlunoDao alunoDao) {
+        scanner.nextLine();
+
+        System.out.println("Digite o nome do aluno:");
+        String nomeAluno = scanner.nextLine();
+        System.out.println("Digite o email do aluno:");
+        String emailAluno = scanner.nextLine();
+
+        Alunos novoAluno = new Alunos(nomeAluno, 0, emailAluno);
+        alunoDao.salvar(novoAluno);
+        System.out.println("Aluno cadastrado com sucesso!");
+    }
+
+    private static void cadastrarProfessor(Scanner scanner, ProfessorDao professorDao) {
+        scanner.nextLine();
+    
+        System.out.println("Digite o nome do professor:");
+        String nomeProfessor = scanner.nextLine();
+        System.out.println("Digite o email do professor:");
+        String emailProfessor = scanner.nextLine();
+    
+        Professor novoProfessor = new Professor(nomeProfessor, 0, emailProfessor);
+        professorDao.inserirProfessor(novoProfessor);
+        System.out.println("Professor cadastrado com sucesso!");
+    }    
+
+    private static void acessarAluno(Scanner scanner, AutenticacaoDao autenticacaoDao, AlunoDao alunoDao) throws SQLException {
+        System.out.println("Digite o email do aluno:");
+        String emailAluno = scanner.next();
+        System.out.println("Digite o ID do aluno:");
+        int idAluno = scanner.nextInt();
+
+        Alunos alunoAutenticado = autenticacaoDao.autenticarAluno(emailAluno, idAluno);
+
+        if (alunoAutenticado != null) {
+            menuAluno(scanner, alunoDao, alunoAutenticado);
+        } else {
+            System.out.println("Autenticação falhou. Verifique suas credenciais.");
+        }
+    }
+
+    private static void acessarProfessor(Scanner scanner, AutenticacaoDao autenticacaoDao, ProfessorDao professorDao, CursoDao cursoDao) throws SQLException {
+        System.out.println("Digite o email do professor:");
+        String emailProfessor = scanner.next();
+        System.out.println("Digite o ID do professor:");
+        int idProfessor = scanner.nextInt();
+    
+        Professor professorAutenticado = autenticacaoDao.autenticarProfessor(emailProfessor, idProfessor);
+    
+        if (professorAutenticado != null) {
+            menuProfessor(scanner, professorDao, professorAutenticado, cursoDao);
+        } else {
+            System.out.println("Autenticação falhou. Verifique suas credenciais.");
+        }
+    }
     private static void menuAluno(Scanner scanner, AlunoDao alunoDao, Alunos alunoAutenticado) {
         int opcao;
         do {
@@ -172,7 +215,7 @@ public class Main {
                     String nomeProfessor = scanner.nextLine();
                     System.out.println("Digite o email do professor:");
                     String emailProfessor = scanner.nextLine();
-                    professorDao.inserirProfessor(new Professor(nomeProfessor, opcao, emailProfessor), null);
+                    professorDao.inserirProfessor(new Professor(nomeProfessor, opcao, emailProfessor));
                     break;
                 case 3:
                     System.out.println("Digite o ID do professor que deseja atualizar:");
