@@ -78,10 +78,11 @@ public class Main {
         String nomeAluno = scanner.nextLine();
         System.out.println("Digite o email do aluno:");
         String emailAluno = scanner.nextLine();
-
-        Alunos novoAluno = new Alunos(nomeAluno, 0, emailAluno);
-        alunoDao.salvar(novoAluno);
-        System.out.println("Aluno cadastrado com sucesso!");
+        
+        int novoIdAluno = alunoDao.obterNovoId();
+        Alunos novoAluno = new Alunos(nomeAluno, novoIdAluno, emailAluno);
+        int idNovoAluno = alunoDao.salvar(novoAluno);
+        System.out.println("Aluno cadastrado com sucesso! ID: " + idNovoAluno);
     }
 
     private static void cadastrarProfessor(Scanner scanner, ProfessorDao professorDao) {
@@ -92,9 +93,10 @@ public class Main {
         System.out.println("Digite o email do professor:");
         String emailProfessor = scanner.nextLine();
     
-        Professor novoProfessor = new Professor(nomeProfessor, 0, emailProfessor);
-        professorDao.inserirProfessor(novoProfessor);
-        System.out.println("Professor cadastrado com sucesso!");
+        int novoIdProfessor = professorDao.obterNovoId();
+        Professor novoProfessor = new Professor(nomeProfessor, novoIdProfessor, emailProfessor);
+        int idNovoProfessor = professorDao.inserirProfessor(novoProfessor);
+        System.out.println("Professor cadastrado com sucesso! ID: " + idNovoProfessor);
     }    
 
     private static void acessarAluno(Scanner scanner, AutenticacaoDao autenticacaoDao, AlunoDao alunoDao) throws SQLException {
@@ -106,7 +108,7 @@ public class Main {
         Alunos alunoAutenticado = autenticacaoDao.autenticarAluno(emailAluno, idAluno);
 
         if (alunoAutenticado != null) {
-            menuAluno(scanner, alunoDao, alunoAutenticado);
+            menuAluno(scanner, alunoDao, alunoAutenticado, alunoAutenticado);
         } else {
             System.out.println("Autenticação falhou. Verifique suas credenciais.");
         }
@@ -126,7 +128,7 @@ public class Main {
             System.out.println("Autenticação falhou. Verifique suas credenciais.");
         }
     }
-    private static void menuAluno(Scanner scanner, AlunoDao alunoDao, Alunos alunoAutenticado) {
+    private static void menuAluno(Scanner scanner, AlunoDao alunoDao, Alunos alunoAutenticado, Object cursoDao) {
         int opcao;
         do {
             System.out.println("***** Menu Aluno *****");
@@ -134,6 +136,7 @@ public class Main {
             System.out.println("2 - Listar Alunos");
             System.out.println("3 - Atualizar Aluno");
             System.out.println("4 - Deletar Aluno");
+            System.out.println("5 - Adicionar Aluno a um Curso");
             System.out.println("0 - Voltar ao Menu Principal");
             System.out.print("Escolha uma opção: ");
             opcao = scanner.nextInt();
@@ -175,6 +178,9 @@ public class Main {
                     int idAlunoDeletar = scanner.nextInt();
                     alunoDao.deletar(idAlunoDeletar);
                     break;
+                case 5:
+                    adicionarAlunoCurso(scanner, alunoDao, alunoAutenticado, cursoDao);
+                    break;
                 case 0:
                     System.out.println("Voltando para o Menu Principal");
                     break;
@@ -193,6 +199,7 @@ public class Main {
             System.out.println("2 - Inserir Professor");
             System.out.println("3 - Atualizar Professor");
             System.out.println("4 - Deletar Professor");
+            System.out.println("5 - Adicionar Professor a um Curso");
             System.out.println("0 - Voltar ao Menu Principal");
             System.out.print("Escolha uma opção: ");
             opcao = scanner.nextInt();
@@ -234,6 +241,9 @@ public class Main {
                     int idProfessorDeletar = scanner.nextInt();
                     professorDao.deletarProfessor(idProfessorDeletar);
                     break;
+                case 5:
+                    adicionarProfessorCurso(scanner, professorDao, professorAutenticado, cursoDao);
+                    break;
                 case 0:
                     System.out.println("Voltando para o Menu Principal");
                     break;
@@ -243,4 +253,20 @@ public class Main {
             }
         } while (opcao != 0);
     }
+
+    private static void adicionarAlunoCurso(Scanner scanner, AlunoDao alunoDao, Alunos alunoAutenticado, Object cursoDao) {
+        System.out.println("Digite o ID do curso:");
+        int idCurso = scanner.nextInt();
+    
+        alunoDao.associarAlunoCurso(alunoAutenticado.getId(), idCurso);
+        System.out.println("Aluno adicionado ao curso com sucesso!");
+    }
+    
+    private static void adicionarProfessorCurso(Scanner scanner, ProfessorDao professorDao, Professor professorAutenticado, CursoDao cursoDao) {
+        System.out.println("Digite o ID do curso:");
+        int idCurso = scanner.nextInt();
+    
+        professorDao.associarProfessorCurso(professorAutenticado.getId(), idCurso);
+        System.out.println("Professor adicionado ao curso com sucesso!");
+    }    
 }
