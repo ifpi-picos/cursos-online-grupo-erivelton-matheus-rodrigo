@@ -1,7 +1,6 @@
 package br.edu.ifpi.DAO;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,18 +12,13 @@ import br.edu.ifpi.Entidades.Cursos;
 public class CursoDao {
     private Connection connection;
 
-    public CursoDao() {
-        String supabaseUrl = "jdbc:postgresql://db.wchdzdurkzceccavsubp.supabase.co:5432/postgres?user=postgres&password=Cocarato05!";
-        try {
-            this.connection = DriverManager.getConnection(supabaseUrl);
-        } catch (SQLException e) {
-            System.out.println("Erro ao conectar ao Supabase: " + e.getMessage());
-        }
+    public CursoDao(Connection connection) {
+        this.connection = connection;
     }
 
     public void cadastrarCurso(String nome, String status, int cargaHoraria) {
         String sql = "INSERT INTO cursos (nome, status, carga_horaria) VALUES (?, ?, ?)";
-        try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
+        try (PreparedStatement statement = getConnection().prepareStatement(sql)) {
             statement.setString(1, nome);
             statement.setString(2, status);
             statement.setInt(3, cargaHoraria);
@@ -37,7 +31,7 @@ public class CursoDao {
 
     public void atualizarCurso(String nome, String novoStatus) {
         String sql = "UPDATE cursos SET status = ? WHERE nome = ?";
-        try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
+        try (PreparedStatement statement = getConnection().prepareStatement(sql)) {
             statement.setString(1, novoStatus);
             statement.setString(2, nome);
 
@@ -50,7 +44,7 @@ public class CursoDao {
     public List<Cursos> listarCursosDisponiveis() {
         List<Cursos> cursos = new ArrayList<>();
         String sql = "SELECT * FROM cursos";
-        try (PreparedStatement statement = this.connection.prepareStatement(sql);
+        try (PreparedStatement statement = getConnection().prepareStatement(sql);
              ResultSet resultSet = statement.executeQuery()) {
 
             while (resultSet.next()) {
@@ -68,11 +62,18 @@ public class CursoDao {
 
     public void deletarCurso(String nome) {
         String sql = "DELETE FROM cursos WHERE nome = ?";
-        try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
+        try (PreparedStatement statement = getConnection().prepareStatement(sql)) {
             statement.setString(1, nome);
             statement.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Erro ao deletar curso: " + e.getMessage());
         }
+    }
+
+    private Connection getConnection() {
+        if (connection == null) {
+            throw new IllegalStateException("A conexão com o banco de dados não foi inicializada corretamente.");
+        }
+        return connection;
     }
 }

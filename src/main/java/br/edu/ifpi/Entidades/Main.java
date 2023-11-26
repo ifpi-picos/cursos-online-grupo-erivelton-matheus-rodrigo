@@ -22,6 +22,7 @@ public class Main {
             AutenticacaoDao autenticacaoDao = new AutenticacaoDao(conexao);
             AlunoDao alunoDao = new AlunoDao(conexao);
             ProfessorDao professorDao = new ProfessorDao(conexao);
+            CursoDao cursoDao = new CursoDao(conexao);
 
             int opcao;
             do {
@@ -54,7 +55,7 @@ public class Main {
                         Professor professorAutenticado = autenticacaoDao.autenticarProfessor(emailProfessor, idProfessor);
 
                         if (professorAutenticado != null) {
-                            menuProfessor(scanner, professorDao, professorAutenticado, null);
+                            menuProfessor(scanner, professorDao, professorAutenticado, cursoDao);
                         } else {
                             System.out.println("Autenticação falhou. Verifique suas credenciais.");
                         }
@@ -81,7 +82,6 @@ public class Main {
             scanner.close();
         }
     }
-
 
     private static void menuAluno(Scanner scanner, AlunoDao alunoDao, Alunos alunoAutenticado) {
         int opcao;
@@ -142,7 +142,7 @@ public class Main {
         } while (opcao != 0);
     }
 
-    public static void menuProfessor(Scanner scanner, ProfessorDao professorDao, Professor professorAutenticado, CursoDao cursoDao) {
+    private static void menuProfessor(Scanner scanner, ProfessorDao professorDao, Professor professorAutenticado, CursoDao cursoDao) throws SQLException {
         int opcao;
         do {
             System.out.println("***** Menu Professor *****");
@@ -150,15 +150,13 @@ public class Main {
             System.out.println("2 - Inserir Professor");
             System.out.println("3 - Atualizar Professor");
             System.out.println("4 - Deletar Professor");
-            System.out.println("5 - Associar Professor a Curso");
-            System.out.println("6 - Visualizar Lista de Professores com Cursos");
             System.out.println("0 - Voltar ao Menu Principal");
             System.out.print("Escolha uma opção: ");
             opcao = scanner.nextInt();
 
             switch (opcao) {
                 case 1:
-                    List<Professor> professores = professorDao.listarProfessoresComCursos();
+                    List<Professor> professores = professorDao.listarProfessores();
                     if (professores.isEmpty()) {
                         System.out.println("Não há professores cadastrados.");
                     } else {
@@ -193,12 +191,6 @@ public class Main {
                     int idProfessorDeletar = scanner.nextInt();
                     professorDao.deletarProfessor(idProfessorDeletar);
                     break;
-                case 5:
-                    associarProfessorACurso(scanner, professorDao, cursoDao);
-                    break;
-                case 6:
-                    visualizarProfessoresComCursos(professorDao);
-                    break;
                 case 0:
                     System.out.println("Voltando para o Menu Principal");
                     break;
@@ -207,50 +199,5 @@ public class Main {
                     break;
             }
         } while (opcao != 0);
-    }
-
-    private static void associarProfessorACurso(Scanner scanner, ProfessorDao professorDao, CursoDao cursoDao) {
-        List<Professor> professores = professorDao.listarProfessoresComCursos();
-        List<Cursos> cursos = cursoDao.listarCursosDisponiveis();
-
-        System.out.println("***** Associar Professor a Curso *****");
-        System.out.println("Professores disponíveis:");
-
-        for (Professor professor : professores) {
-            System.out.println("ID: " + professor.getId() + ", Nome: " + professor.getNome());
-        }
-
-        System.out.println("Cursos disponíveis:");
-
-        for (Cursos curso : cursos) {
-            System.out.println("ID: " + curso.getId() + ", Nome: " + curso.getNome());
-        }
-
-        System.out.print("Digite o ID do Professor: ");
-        int idProfessor = scanner.nextInt();
-        System.out.print("Digite o ID do Curso: ");
-        int idCurso = scanner.nextInt();
-
-        professorDao.associarCurso(idProfessor, idCurso);
-        System.out.println("Curso associado ao professor com sucesso!");
-    }
-
-    private static void visualizarProfessoresComCursos(ProfessorDao professorDao) {
-        List<Professor> professoresComCursos = professorDao.listarProfessoresComCursos();
-
-        System.out.println("***** Lista de Professores com seus Cursos *****");
-        for (Professor professor : professoresComCursos) {
-            System.out.println("Professor: " + professor.getNome());
-            List<Cursos> cursosDoProfessor = professor.getCursos();
-
-            if (cursosDoProfessor.isEmpty()) {
-                System.out.println(" - Sem cursos associados");
-            } else {
-                for (Cursos curso : cursosDoProfessor) {
-                    System.out.println(" - Curso: " + curso.getNome());
-                }
-            }
-            System.out.println();
-        }
     }
 }
