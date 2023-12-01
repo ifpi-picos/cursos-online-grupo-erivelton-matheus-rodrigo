@@ -18,12 +18,12 @@ public class Main {
 
         try {
             conexao = DriverManager.getConnection("jdbc:postgresql://db.wchdzdurkzceccavsubp.supabase.co:5432/postgres?user=postgres&password=Cocarato05!");
-
+        
             AutenticacaoDao autenticacaoDao = new AutenticacaoDao(conexao);
             AlunoDao alunoDao = new AlunoDao(conexao);
             ProfessorDao professorDao = new ProfessorDao(conexao);
             CursoDao cursoDao = new CursoDao(conexao);
-
+        
             int opcao;
             do {
                 System.out.println("***** Menu Principal *****");
@@ -31,10 +31,12 @@ public class Main {
                 System.out.println("2 - Cadastro de Professor");
                 System.out.println("3 - Acesso de Aluno");
                 System.out.println("4 - Acesso de Professor");
+                System.out.println("5 - Cadastrar Cursos");
+                System.out.println("6 - Acessar Cursos:");
                 System.out.println("0 - Sair");
                 System.out.print("Escolha uma opção: ");
                 opcao = scanner.nextInt();
-
+        
                 switch (opcao) {
                     case 1:
                         cadastrarAluno(scanner, alunoDao);
@@ -47,6 +49,9 @@ public class Main {
                         break;
                     case 4:
                         acessarProfessor(scanner, autenticacaoDao, professorDao, cursoDao);
+                        break;
+                    case 5:
+                        menuCursos(scanner, cursoDao, alunoDao);
                         break;
                     case 0:
                         System.out.println("Programa Encerrado!");
@@ -68,7 +73,7 @@ public class Main {
                 }
             }
             scanner.close();
-        }
+        }        
     }
 
     private static void cadastrarAluno(Scanner scanner, AlunoDao alunoDao) {
@@ -128,6 +133,7 @@ public class Main {
             System.out.println("Autenticação falhou. Verifique suas credenciais.");
         }
     }
+
     private static void menuAluno(Scanner scanner, AlunoDao alunoDao, Alunos alunoAutenticado, Object cursoDao) {
         int opcao;
         do {
@@ -137,6 +143,8 @@ public class Main {
             System.out.println("3 - Atualizar Aluno");
             System.out.println("4 - Deletar Aluno");
             System.out.println("5 - Adicionar Aluno a um Curso");
+            System.out.println("6 - Registrar Nota");
+            System.out.println("7 - Ver Estatísticas de Desempenho");
             System.out.println("0 - Voltar ao Menu Principal");
             System.out.print("Escolha uma opção: ");
             opcao = scanner.nextInt();
@@ -181,6 +189,12 @@ public class Main {
                 case 5:
                     adicionarAlunoCurso(scanner, alunoDao, alunoAutenticado, cursoDao);
                     break;
+                case 6:
+                    registrarNota(scanner, alunoDao, alunoAutenticado, cursoDao);
+                    break;
+                case 7:
+                    exibirEstatisticasDesempenho(cursoDao, alunoAutenticado, "Nome do Curso"); 
+                    break;
                 case 0:
                     System.out.println("Voltando para o Menu Principal");
                     break;
@@ -190,7 +204,7 @@ public class Main {
             }
         } while (opcao != 0);
     }
-
+    
     private static void menuProfessor(Scanner scanner, ProfessorDao professorDao, Professor professorAutenticado, CursoDao cursoDao) throws SQLException {
         int opcao;
         do {
@@ -254,19 +268,149 @@ public class Main {
         } while (opcao != 0);
     }
 
-    private static void adicionarAlunoCurso(Scanner scanner, AlunoDao alunoDao, Alunos alunoAutenticado, Object cursoDao) {
-        System.out.println("Digite o ID do curso:");
-        int idCurso = scanner.nextInt();
+    private static void menuCursos(Scanner scanner, CursoDao cursoDao, AlunoDao alunoDao) {
+    int opcao;
+    do {
+        System.out.println("***** Menu de Cursos *****");
+        System.out.println("1 - Cadastrar Curso");
+        System.out.println("2 - Atualizar Curso");
+        System.out.println("3 - Listar Cursos Disponíveis");
+        System.out.println("4 - Exibir Quantidade de Alunos Matriculados no Curso");
+        System.out.println("5 - Exibir Nota Média Geral dos Alunos no Curso");
+        System.out.println("6 - Exibir Porcentagem de Alunos Aprovados");
+        System.out.println("0 - Voltar ao Menu Principal");
+        System.out.print("Escolha uma opção: ");
+        opcao = scanner.nextInt();
+
+        switch (opcao) {
+            case 1:
+                cadastrarCurso(scanner, cursoDao);
+                break;
+            case 2:
+                atualizarCurso(scanner, cursoDao);
+                break;
+            case 3:
+                listarCursos(cursoDao);
+                break;
+            case 4:
+                exibirQuantidadeAlunosMatriculados(cursoDao);
+                break;
+            case 5:
+                exibirNotaMediaGeral(cursoDao);
+                break;
+            case 6:
+                exibirPorcentagemAprovados(scanner, cursoDao);
+                break;
+            case 0:
+                System.out.println("Voltando para o Menu Principal");
+                break;
+            default:
+                System.out.println("Opção inválida! Escolha uma opção válida");
+                break;
+        }
+    } while (opcao != 0);
+}
+
+private static void cadastrarCurso(Scanner scanner, CursoDao cursoDao) {
+    scanner.nextLine(); 
+    System.out.println("Digite o nome do curso:");
+    String nomeCurso = scanner.nextLine();
+    System.out.println("Digite o status do curso (aberto/fechado):");
+    String statusCurso = scanner.nextLine();
+    System.out.println("Digite a carga horária do curso:");
+    int cargaHoraria = scanner.nextInt();
+    cursoDao.cadastrarCurso(nomeCurso, statusCurso, cargaHoraria);
+    System.out.println("Curso cadastrado com sucesso!");
+}
+
+    private static void atualizarCurso(Scanner scanner, CursoDao cursoDao) {
+        scanner.nextLine();
+        System.out.println("Digite o nome do curso que deseja atualizar:");
+        String nomeCurso = scanner.nextLine();
+        System.out.println("Digite o novo status do curso (aberto/fechado):");
+        String novoStatusCurso = scanner.nextLine();
+        cursoDao.atualizarCurso(nomeCurso, novoStatusCurso);
+        System.out.println("Curso atualizado com sucesso!");
+    }
+
+    private static void listarCursos(CursoDao cursoDao) {
+        List<Cursos> cursos = cursoDao.listarCursosDisponiveis();
+        if (cursos.isEmpty()) {
+            System.out.println("Não há cursos disponíveis.");
+        } else {
+            System.out.println("***** Lista de Cursos Disponíveis *****");
+            for (Cursos curso : cursos) {
+                System.out.println("Nome: " + curso.getNome() + ", Status: " + curso.getStatus() + ", Carga Horária: " + curso.getCargaHoraria());
+            }
+        }
+    }
+
+    private static void exibirPorcentagemAprovados(Scanner scanner, CursoDao cursoDao) {
+        scanner.nextLine();
+        System.out.println("Digite o nome do curso:");
+        String nomeCurso = scanner.nextLine();
+        double porcentagemAprovados = cursoDao.calcularPorcentagemAprovados(nomeCurso);
+        System.out.println("Porcentagem de alunos aprovados no curso '" + nomeCurso + "': " + porcentagemAprovados + "%");
+    }
+
+    private static void exibirEstatisticasDesempenho(Object cursoDao, Alunos alunoAutenticado, String nomeCurso) {
+        double media = ((CursoDao) cursoDao).calcularNotaMediaCurso(nomeCurso);
+        int quantidadeAlunos = ((CursoDao) cursoDao).quantidadeAlunosMatriculados(nomeCurso);
+        double porcentagemAprovados = ((CursoDao) cursoDao).calcularPorcentagemAprovados(nomeCurso);
+        double porcentagemReprovados = ((CursoDao) cursoDao).calcularPorcentagemReprovados(nomeCurso);
+
+        System.out.println("***** Estatísticas de Desempenho *****");
+        System.out.println("Média das notas: " + media);
+        System.out.println("Quantidade de alunos matriculados: " + quantidadeAlunos);
+        System.out.println("Porcentagem de alunos aprovados: " + porcentagemAprovados + "%");
+        System.out.println("Porcentagem de alunos reprovados: " + porcentagemReprovados + "%");
+    }
+
+    private static void exibirQuantidadeAlunosMatriculados(CursoDao cursoDao) {
+        int quantidadeAlunos = cursoDao.quantidadeAlunosMatriculados(null);
+        System.out.println("Quantidade de alunos matriculados no curso: " + quantidadeAlunos);
+    }    
     
-        alunoDao.associarAlunoCurso(alunoAutenticado.getId(), idCurso);
-        System.out.println("Aluno adicionado ao curso com sucesso!");
+    private static void exibirNotaMediaGeral(CursoDao cursoDao) {
+        double media = cursoDao.calcularNotaMediaCurso(null);
+        System.out.println("Nota média geral dos alunos no curso: " + media);
+    }    
+
+    private static void adicionarAlunoCurso(Scanner scanner, AlunoDao alunoDao, Alunos alunoAutenticado, Object cursoDao) {
+        System.out.println("Digite o nome do curso:");
+        String nomeCurso = scanner.next();
+        
+        if (((CursoDao) cursoDao).verificarExistenciaCurso(nomeCurso)) {
+            ((CursoDao) cursoDao).registrarNotaAluno(nomeCurso, alunoAutenticado.getNome(), 0.0);
+            System.out.println("Aluno matriculado no curso '" + nomeCurso + "' com sucesso!");
+        } else {
+            System.out.println("O curso informado não existe.");
+        }
+    }
+    
+    private static void registrarNota(Scanner scanner, AlunoDao alunoDao, Alunos alunoAutenticado, Object cursoDao) {
+        System.out.println("Digite o nome do curso:");
+        String nomeCurso = scanner.next();
+        System.out.println("Digite a nota do aluno:");
+        double nota = scanner.nextDouble();
+        
+        if (((CursoDao) cursoDao).verificarExistenciaCurso(nomeCurso)) {
+            ((CursoDao) cursoDao).registrarNotaAluno(nomeCurso, alunoAutenticado.getNome(), nota);
+            System.out.println("Nota registrada com sucesso para o aluno '" + alunoAutenticado.getNome() + "' no curso '" + nomeCurso + "'.");
+        } else {
+            System.out.println("O curso informado não existe.");
+        }
     }
     
     private static void adicionarProfessorCurso(Scanner scanner, ProfessorDao professorDao, Professor professorAutenticado, CursoDao cursoDao) {
-        System.out.println("Digite o ID do curso:");
-        int idCurso = scanner.nextInt();
-    
-        professorDao.associarProfessorCurso(professorAutenticado.getId(), idCurso);
-        System.out.println("Professor adicionado ao curso com sucesso!");
-    }    
+        System.out.println("Digite o nome do curso:");
+        String nomeCurso = scanner.next();
+        
+        if (cursoDao.verificarExistenciaCurso(nomeCurso)) {
+            cursoDao.atualizarCurso(nomeCurso, "Ativo");
+            System.out.println("Professor adicionado ao curso '" + nomeCurso + "' com sucesso!");
+        } else {
+            System.out.println("O curso informado não existe.");
+        }
+    }
 }
