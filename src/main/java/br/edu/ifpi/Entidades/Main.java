@@ -29,10 +29,9 @@ public class Main {
                 System.out.println("***** Menu Principal *****");
                 System.out.println("1 - Cadastro de Aluno");
                 System.out.println("2 - Cadastro de Professor");
-                System.out.println("3 - Acesso de Aluno");
-                System.out.println("4 - Acesso de Professor");
-                System.out.println("5 - Cadastrar Cursos");
-                System.out.println("6 - Acessar Cursos:");
+                System.out.println("3 - Menu de Cursos");
+                System.out.println("4 - Acesso de Aluno");
+                System.out.println("5 - Acesso de Professor");
                 System.out.println("0 - Sair");
                 System.out.print("Escolha uma opção: ");
                 opcao = scanner.nextInt();
@@ -45,13 +44,13 @@ public class Main {
                         cadastrarProfessor(scanner, professorDao);
                         break;
                     case 3:
-                        acessarAluno(scanner, autenticacaoDao, alunoDao);
+                        menuCursos(scanner, cursoDao, alunoDao);
                         break;
                     case 4:
-                        acessarProfessor(scanner, autenticacaoDao, professorDao, cursoDao);
+                        acessarAluno(scanner, autenticacaoDao, alunoDao);
                         break;
                     case 5:
-                        menuCursos(scanner, cursoDao, alunoDao);
+                        acessarProfessor(scanner, autenticacaoDao, professorDao, cursoDao);
                         break;
                     case 0:
                         System.out.println("Programa Encerrado!");
