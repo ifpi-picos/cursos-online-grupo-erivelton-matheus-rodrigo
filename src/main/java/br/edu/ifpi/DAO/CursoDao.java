@@ -243,4 +243,19 @@ public class CursoDao {
         }
         return idCurso;
     }
+
+    public boolean registrarNotaAluno(int idAluno, String nomeCurso, double nota) {
+        String query = "INSERT INTO aluno_curso (id_aluno, nome_curso, nota) VALUES (?, ?, ?)";
+        try (PreparedStatement pstmt = Conexao.prepareStatement(query)) {
+            pstmt.setInt(1, idAluno);
+            pstmt.setString(2, nomeCurso);
+            pstmt.setDouble(3, nota);
+
+            int linhasAfetadas = pstmt.executeUpdate();
+            return linhasAfetadas > 0; 
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false; 
+        }
+    }
 }

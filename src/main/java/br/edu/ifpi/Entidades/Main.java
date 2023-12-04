@@ -142,7 +142,6 @@ public class Main {
             System.out.println("3 - Atualizar Aluno");
             System.out.println("4 - Deletar Aluno");
             System.out.println("5 - Adicionar Aluno a um Curso");
-            System.out.println("6 - Registrar Nota");
             System.out.println("7 - Ver Estatísticas de Desempenho");
             System.out.println("8 - Matrícula do Aluno");
             System.out.println("0 - Voltar ao Menu Principal");
@@ -190,12 +189,9 @@ public class Main {
                     adicionarAlunoCurso(scanner, alunoDao, alunoAutenticado, (CursoDao) cursoDao);
                     break;
                 case 6:
-                    registrarNota(scanner, alunoDao, alunoAutenticado, (CursoDao) cursoDao);
-                    break;
-                case 7:
                     exibirEstatisticasDesempenho((CursoDao) cursoDao, alunoAutenticado, "Nome do Curso");
                     break;
-                case 8:
+                case 7:
                     try {
                         matricularDesmatricularAluno(scanner, alunoDao, alunoAutenticado, cursoDao);
                     } catch (SQLException e) {
@@ -285,6 +281,7 @@ public class Main {
         System.out.println("4 - Exibir Quantidade de Alunos Matriculados no Curso");
         System.out.println("5 - Exibir Nota Média Geral dos Alunos no Curso");
         System.out.println("6 - Exibir Porcentagem de Alunos Aprovados");
+        System.out.println("7 - Registrar Nota de Aluno em Curso");
         System.out.println("0 - Voltar ao Menu Principal");
         System.out.print("Escolha uma opção: ");
         opcao = scanner.nextInt();
@@ -307,6 +304,9 @@ public class Main {
                 break;
             case 6:
                 exibirPorcentagemAprovados(scanner, cursoDao);
+                break;
+            case 7:
+                registrarNotaAlunoCurso(scanner, alunoDao, cursoDao);
                 break;
             case 0:
                 System.out.println("Voltando para o Menu Principal");
@@ -396,28 +396,6 @@ private static void cadastrarCurso(Scanner scanner, CursoDao cursoDao) {
         }
     }    
     
-    private static void registrarNota(Scanner scanner, AlunoDao alunoDao, Alunos alunoAutenticado, CursoDao cursoDao) {
-        System.out.println("Digite o nome do curso:");
-        String nomeCurso = scanner.next();
-        scanner.nextLine();
-    
-        System.out.println("Digite a nota do aluno:");
-        double nota;
-        try {
-            nota = Double.parseDouble(scanner.nextLine().replace(",", "."));
-        } catch (NumberFormatException e) {
-            System.out.println("Formato inválido para a nota. Use um número válido.");
-            return;
-        }
-    
-        if (cursoDao.verificarExistenciaCurso(nomeCurso)) {
-            cursoDao.registrarNotaAluno(nomeCurso, alunoAutenticado.getId(), nota);
-            System.out.println("Nota registrada com sucesso para o aluno '" + alunoAutenticado.getNome() + "' no curso '" + nomeCurso + "'.");
-        } else {
-            System.out.println("O curso informado não existe.");
-        }
-    }    
-    
     private static void adicionarProfessorCurso(Scanner scanner, ProfessorDao professorDao, Professor professorAutenticado, CursoDao cursoDao) {
         System.out.println("Digite o nome do curso:");
         String nomeCurso = scanner.next();
@@ -481,6 +459,24 @@ private static void cadastrarCurso(Scanner scanner, CursoDao cursoDao) {
             System.out.println("Aluno desmatriculado com sucesso do curso: " + nomeCursoDesmatricula);
         } else {
             System.out.println("Curso não encontrado. Verifique o nome e tente novamente.");
+        }
+    }
+
+    private static void registrarNotaAlunoCurso(Scanner scanner, AlunoDao alunoDao, CursoDao cursoDao) {
+        scanner.nextLine();
+        System.out.println("Digite o ID do aluno:");
+        int idAluno = scanner.nextInt();
+        scanner.nextLine();
+        System.out.println("Digite o nome do curso:");
+        String nomeCurso = scanner.nextLine();
+        System.out.println("Digite a nota do aluno no curso:");
+        double nota = scanner.nextDouble();
+    
+        boolean resultado = cursoDao.registrarNotaAluno(idAluno, nomeCurso, nota);
+        if (resultado) {
+            System.out.println("Nota registrada com sucesso para o aluno no curso.");
+        } else {
+            System.out.println("Não foi possível registrar a nota. Verifique os dados fornecidos.");
         }
     }
 }
