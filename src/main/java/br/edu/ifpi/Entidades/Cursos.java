@@ -5,7 +5,7 @@ public class Cursos {
     private String status;
     private int cargaHoraria;
 
-    public Cursos(int id, String nome, String status, int cargaHoraria) {
+    public Cursos(int id,String nome, String status, int cargaHoraria) {
         this.nome = nome;
         this.status = status;
         this.cargaHoraria = cargaHoraria;

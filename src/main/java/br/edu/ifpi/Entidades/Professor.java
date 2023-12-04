@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Professor {
-    private String nome;
     private int id;
+    private String nome;
     private String email;
     private List<Cursos> cursosMinistrados;
 
     public Professor(String nome, int id, String email){
-        this.nome = nome;
         this.id = id;
+        this.nome = nome;
         this.email = email;
         this.cursosMinistrados = new ArrayList<>();
     }
@@ -56,5 +56,9 @@ public class Professor {
     @Override
     public String toString() {
         return "ID: " + id + " | Nome: " + nome + " | Email: " + email + " | Cursos Ministrados: " + cursosMinistrados;
+    }
+
+    public List<Professor> getCursos() {
+        return null;
     }
 }
