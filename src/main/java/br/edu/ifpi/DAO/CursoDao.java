@@ -258,4 +258,80 @@ public class CursoDao {
             return false; 
         }
     }
+
+    public List<Cursos> obterCursosConcluidos(int idAluno) throws SQLException {
+        List<Cursos> cursosConcluidos = new ArrayList<>();
+        
+        String sql = "SELECT c.* FROM cursos c JOIN aluno_curso ac ON c.nome = ac.nome_curso WHERE ac.id_aluno = ? AND ac.status = 'concluído'";
+        
+        try (PreparedStatement stmt = Conexao.prepareStatement(sql)) {
+            stmt.setInt(1, idAluno);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Cursos curso = new Cursos(
+                        rs.getInt("id"),
+                        rs.getString("nome"),
+                        rs.getString("status"),
+                        rs.getInt("carga_horaria")
+                    );
+                    cursosConcluidos.add(curso);
+                }
+            }
+        }
+        
+        return cursosConcluidos;
+    }
+
+    public List<Cursos> obterCursosMatriculadosAluno(int idAluno) throws SQLException {
+        List<Cursos> cursosMatriculados = new ArrayList<>();
+        
+        String sql = "SELECT c.* FROM cursos c JOIN cursos_alunos ac ON c.id = ac.id_curso WHERE ac.id_aluno = ? AND ac.status_curso = 'matriculado'";
+        
+        try (PreparedStatement stmt = Conexao.prepareStatement(sql)) {
+            stmt.setInt(1, idAluno);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Cursos curso = new Cursos(
+                        rs.getInt("id"),
+                        rs.getString("nome"),
+                        rs.getString("status"),
+                        rs.getInt("carga_horaria")
+                    );
+                    cursosMatriculados.add(curso);
+                }
+            }
+        }
+        
+        return cursosMatriculados;
+    }
+    
+
+    public double calcularPorcentagemAproveitamentoAluno(int idAluno) throws SQLException {
+        String sqlTotalCursos = "SELECT COUNT(*) FROM aluno_curso WHERE id_aluno = ?";
+        String sqlCursosConcluidos = "SELECT COUNT(*) FROM aluno_curso WHERE id_aluno = ? AND status = 'concluído'";
+        
+        try (PreparedStatement stmtTotalCursos = Conexao.prepareStatement(sqlTotalCursos);
+             PreparedStatement stmtCursosConcluidos = Conexao.prepareStatement(sqlCursosConcluidos)) {
+            
+            stmtTotalCursos.setInt(1, idAluno);
+            try (ResultSet rsTotalCursos = stmtTotalCursos.executeQuery()) {
+                if (rsTotalCursos.next()) {
+                    int totalCursos = rsTotalCursos.getInt(1);
+                    if (totalCursos == 0) {
+                        return 0.0;
+                    }
+                    
+                    stmtCursosConcluidos.setInt(1, idAluno);
+                    try (ResultSet rsCursosConcluidos = stmtCursosConcluidos.executeQuery()) {
+                        if (rsCursosConcluidos.next()) {
+                            int cursosConcluidos = rsCursosConcluidos.getInt(1);
+                            return (double) cursosConcluidos / totalCursos * 100;
+                        }
+                    }
+                }
+            }
+        }
+        
+        return 0.0;
+    }
 }

@@ -1,6 +1,7 @@
 package br.edu.ifpi.DAO;
 
 import br.edu.ifpi.Entidades.Alunos;
+import br.edu.ifpi.Entidades.Cursos;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -143,5 +144,51 @@ public class AlunoDao {
             ps.setInt(2, idCurso);
             ps.executeUpdate();
         }
+    }
+
+    public List<Cursos> obterCursosConcluidos(int idAluno) throws SQLException {
+        List<Cursos> cursosConcluidos = new ArrayList<>();
+        
+        String sql = "SELECT c.* FROM cursos c JOIN cursos_alunos ac ON c.id = ac.id_curso WHERE ac.id_aluno = ? AND ac.status_curso = 'concluído'";
+        
+        try (PreparedStatement stmt = Conexao.prepareStatement(sql)) {
+            stmt.setInt(1, idAluno);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Cursos curso = new Cursos(
+                        rs.getInt("id"),
+                        rs.getString("nome"),
+                        rs.getString("status"),
+                        rs.getInt("carga_horaria")
+                    );
+                    cursosConcluidos.add(curso);
+                }
+            }
+        }
+        
+        return cursosConcluidos;
+    }    
+
+    public List<Cursos> obterCursosMatriculados(int idAluno) throws SQLException {
+        List<Cursos> cursosMatriculados = new ArrayList<>();
+        
+        String sql = "SELECT c.* FROM cursos c JOIN aluno_curso ac ON c.nome = ac.nome_curso WHERE ac.id_aluno = ? AND ac.status = 'matriculado'";
+        
+        try (PreparedStatement stmt = Conexao.prepareStatement(sql)) {
+            stmt.setInt(1, idAluno);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Cursos curso = new Cursos(
+                        rs.getInt("id"),
+                        rs.getString("nome"),
+                        rs.getString("status"),
+                        rs.getInt("carga_horaria")
+                    );
+                    cursosMatriculados.add(curso);
+                }
+            }
+        }
+        
+        return cursosMatriculados;
     }
 }

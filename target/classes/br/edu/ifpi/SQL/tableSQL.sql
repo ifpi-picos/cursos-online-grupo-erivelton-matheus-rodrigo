@@ -1,37 +1,60 @@
-CREATE TABLE professores (
-    id SERIAL PRIMARY KEY,
-    nome VARCHAR(100),
-    email VARCHAR(100)
-);
+create table
+  public.professores (
+    id serial,
+    nome character varying(100) null,
+    email character varying(100) null,
+    constraint professores_pkey primary key (id)
+  ) tablespace pg_default;
+  
+create table
+  public.alunos (
+    id serial,
+    nome character varying(100) null,
+    email character varying(100) null,
+    nota double precision null,
+    constraint alunos_pkey primary key (id)
+  ) tablespace pg_default;
 
-CREATE TABLE alunos (
-    id SERIAL PRIMARY KEY,
-    nome VARCHAR(100),
-    email VARCHAR(100)
-);
+create table
+  public.cursos (
+    id serial,
+    nome character varying(100) null,
+    status character varying(50) null,
+    carga_horaria integer null,
+    constraint cursos_pkey primary key (id),
+    constraint unique_nome unique (nome)
+  ) tablespace pg_default;
 
-CREATE TABLE cursos (
-    id SERIAL PRIMARY KEY,
-    nome VARCHAR(100),
-    status VARCHAR(50),
-    carga_horaria INT
-);
+create table
+  public.professor_curso (
+    id serial,
+    id_professor integer null,
+    nome_curso character varying(100) null,
+    constraint professor_curso_pkey primary key (id),
+    constraint professor_curso_id_professor_fkey foreign key (id_professor) references professores (id)
+  ) tablespace pg_default;
 
-CREATE TABLE turma (
-    id_aluno INTEGER REFERENCES alunos(id),
-    nome_curso VARCHAR(100) REFERENCES cursos(nome),
-    nota_aluno FLOAT
-);
+create table
+  public.aluno_curso (
+    id serial,
+    id_aluno integer null,
+    nota double precision null,
+    nome_curso text null,
+    id_curso integer null,
+    constraint aluno_curso_pkey primary key (id),
+    constraint aluno_curso_id_aluno_fkey foreign key (id_aluno) references alunos (id),
+    constraint aluno_curso_id_curso_fkey foreign key (id_curso) references cursos (id),
+    constraint aluno_curso_nome_curso_fkey foreign key (nome_curso) references cursos (nome)
+  ) tablespace pg_default;
 
-CREATE TABLE professor_curso (
-    id SERIAL PRIMARY KEY,
-    id_professor INTEGER REFERENCES professores(id),
-    nome_curso VARCHAR(100)
-);
-
-CREATE TABLE aluno_curso (
-    id SERIAL PRIMARY KEY,
-    id_aluno INTEGER REFERENCES alunos(id),
-    id_curso INTEGER REFERENCES cursos(id),
-    UNIQUE (id_aluno, id_curso)
-);
+create table
+  public.cursos_alunos (
+    id serial,
+    id_aluno integer null,
+    id_curso integer null,
+    status_curso character varying(50) null,
+    porcentagem_aproveitamento numeric(5, 2) null,
+    constraint cursos_alunos_pkey primary key (id),
+    constraint cursos_alunos_id_aluno_fkey foreign key (id_aluno) references alunos (id),
+    constraint cursos_alunos_id_curso_fkey foreign key (id_curso) references cursos (id)
+  ) tablespace pg_default;

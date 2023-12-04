@@ -133,7 +133,7 @@ public class Main {
         }
     }
 
-    private static void menuAluno(Scanner scanner, AlunoDao alunoDao, Alunos alunoAutenticado, Alunos alunoAutenticado2, CursoDao cursoDao) {
+    private static void menuAluno(Scanner scanner, AlunoDao alunoDao, Alunos alunoAutenticado, Alunos alunoAutenticado2, CursoDao cursoDao) throws SQLException {
         int opcao;
         do {
             System.out.println("***** Menu Aluno *****");
@@ -143,6 +143,9 @@ public class Main {
             System.out.println("4 - Deletar Aluno");
             System.out.println("5 - Ver Estatísticas de Desempenho");
             System.out.println("6 - Matrícula do Aluno");
+            System.out.println("7 - Exibir Cursos Concluídos");
+            System.out.println("8 - Exibir Cursos Matriculados");
+            System.out.println("9 - Exibir Porcentagem de Aproveitamento nos Cursos");
             System.out.println("0 - Voltar ao Menu Principal");
             System.out.print("Escolha uma opção: ");
             opcao = scanner.nextInt();
@@ -193,6 +196,15 @@ public class Main {
                     } catch (SQLException e) {
                         System.out.println("Erro ao executar operação de matrícula/desmatrícula: " + e.getMessage());
                     }
+                    break;
+                case 7:
+                    exibirCursosConcluidosAluno(alunoDao, alunoAutenticado);
+                    break;
+                case 8:
+                    exibirCursosMatriculadosAluno(cursoDao, alunoAutenticado);
+                    break;
+                case 9:
+                    exibirPorcentagemAproveitamentoAluno(cursoDao, alunoAutenticado);
                     break;
                 case 0:
                     System.out.println("Voltando para o Menu Principal");
@@ -461,5 +473,36 @@ private static void cadastrarCurso(Scanner scanner, CursoDao cursoDao) {
         } else {
             System.out.println("Não foi possível registrar a nota. Verifique os dados fornecidos.");
         }
+    }
+
+    private static void exibirCursosConcluidosAluno(AlunoDao alunoDao, Alunos alunoAutenticado) throws SQLException {
+        List<Cursos> cursosConcluidos = alunoDao.obterCursosConcluidos(alunoAutenticado.getId());
+    
+        if (cursosConcluidos.isEmpty()) {
+            System.out.println("O aluno não concluiu nenhum curso.");
+        } else {
+            System.out.println("***** Cursos Concluídos *****");
+            for (Cursos curso : cursosConcluidos) {
+                System.out.println("Nome: " + curso.getNome() + ", Status: Concluído");
+            }
+        }
+    }
+    
+    private static void exibirCursosMatriculadosAluno(CursoDao cursoDao, Alunos alunoAutenticado) throws SQLException {
+        List<Cursos> cursosMatriculados = cursoDao.obterCursosMatriculadosAluno(alunoAutenticado.getId());
+    
+        if (cursosMatriculados.isEmpty()) {
+            System.out.println("O aluno não está matriculado em nenhum curso.");
+        } else {
+            System.out.println("***** Cursos Matriculados *****");
+            for (Cursos curso : cursosMatriculados) {
+                System.out.println("Nome: " + curso.getNome() + ", Status: Matriculado");
+            }
+        }
+    }
+    
+    private static void exibirPorcentagemAproveitamentoAluno(CursoDao cursoDao, Alunos alunoAutenticado) throws SQLException {
+        double aproveitamento = cursoDao.calcularPorcentagemAproveitamentoAluno(alunoAutenticado.getId());
+        System.out.println("Porcentagem de aproveitamento nos cursos: " + aproveitamento + "%");
     }
 }
