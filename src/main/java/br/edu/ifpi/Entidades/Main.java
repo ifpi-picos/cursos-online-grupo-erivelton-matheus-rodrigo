@@ -47,7 +47,7 @@ public class Main {
                         menuCursos(scanner, cursoDao, alunoDao);
                         break;
                     case 4:
-                        acessarAluno(scanner, autenticacaoDao, alunoDao);
+                        acessarAluno(scanner, autenticacaoDao, alunoDao, cursoDao);
                         break;
                     case 5:
                         acessarProfessor(scanner, autenticacaoDao, professorDao, cursoDao);
@@ -103,7 +103,7 @@ public class Main {
         System.out.println("Professor cadastrado com sucesso! ID: " + idNovoProfessor);
     }    
 
-    private static void acessarAluno(Scanner scanner, AutenticacaoDao autenticacaoDao, AlunoDao alunoDao) throws SQLException {
+    private static void acessarAluno(Scanner scanner, AutenticacaoDao autenticacaoDao, AlunoDao alunoDao, CursoDao cursoDao) throws SQLException {
         System.out.println("Digite o email do aluno:");
         String emailAluno = scanner.next();
         System.out.println("Digite o ID do aluno:");
@@ -112,7 +112,7 @@ public class Main {
         Alunos alunoAutenticado = autenticacaoDao.autenticarAluno(emailAluno, idAluno);
 
         if (alunoAutenticado != null) {
-            menuAluno(scanner, alunoDao, alunoAutenticado, alunoAutenticado);
+            menuAluno(scanner, alunoDao, alunoAutenticado, alunoAutenticado, cursoDao);
         } else {
             System.out.println("Autenticação falhou. Verifique suas credenciais.");
         }
@@ -133,7 +133,7 @@ public class Main {
         }
     }
 
-    private static void menuAluno(Scanner scanner, AlunoDao alunoDao, Alunos alunoAutenticado, Object cursoDao) {
+    private static void menuAluno(Scanner scanner, AlunoDao alunoDao, Alunos alunoAutenticado, Alunos alunoAutenticado2, CursoDao cursoDao) {
         int opcao;
         do {
             System.out.println("***** Menu Aluno *****");
@@ -357,10 +357,10 @@ private static void cadastrarCurso(Scanner scanner, CursoDao cursoDao) {
     }
 
     private static void exibirEstatisticasDesempenho(CursoDao cursoDao, Alunos alunoAutenticado, String nomeCurso) {
-        double media = ((CursoDao) cursoDao).calcularNotaMediaCurso(nomeCurso);
-        int quantidadeAlunos = ((CursoDao) cursoDao).quantidadeAlunosMatriculados(nomeCurso);
-        double porcentagemAprovados = ((CursoDao) cursoDao).calcularPorcentagemAprovados(nomeCurso);
-        double porcentagemReprovados = ((CursoDao) cursoDao).calcularPorcentagemReprovados(nomeCurso);
+        double media = cursoDao.calcularNotaMediaCurso(nomeCurso);
+        int quantidadeAlunos = cursoDao.quantidadeAlunosMatriculados(nomeCurso);
+        double porcentagemAprovados =  cursoDao.calcularPorcentagemAprovados(nomeCurso);
+        double porcentagemReprovados = cursoDao.calcularPorcentagemReprovados(nomeCurso);
 
         System.out.println("***** Estatísticas de Desempenho *****");
         System.out.println("Média das notas: " + media);
@@ -391,7 +391,7 @@ private static void cadastrarCurso(Scanner scanner, CursoDao cursoDao) {
         }
     }    
 
-    private static void matricularDesmatricularAluno(Scanner scanner, AlunoDao alunoDao, Alunos alunoAutenticado, Object cursoDao) throws SQLException {
+    private static void matricularDesmatricularAluno(Scanner scanner, AlunoDao alunoDao, Alunos alunoAutenticado, CursoDao cursoDao) throws SQLException {
         System.out.println("***** Matrícula e Desmatrícula em Cursos *****");
         System.out.println("1 - Matricular em Curso");
         System.out.println("2 - Desmatricular de Curso");
@@ -415,12 +415,12 @@ private static void cadastrarCurso(Scanner scanner, CursoDao cursoDao) {
         }
     }
     
-    private static void matricularAluno(Scanner scanner, AlunoDao alunoDao, Alunos alunoAutenticado, Object cursoDao) throws SQLException {
+    private static void matricularAluno(Scanner scanner, AlunoDao alunoDao, Alunos alunoAutenticado,CursoDao cursoDao) throws SQLException {
         scanner.nextLine();
         System.out.println("Digite o nome do curso que deseja se matricular:");
         String nomeCursoMatricula = scanner.nextLine();
     
-        int idCursoMatricula = ((CursoDao) cursoDao).obterIdPeloNome(nomeCursoMatricula);
+        int idCursoMatricula = cursoDao.obterIdPeloNome(nomeCursoMatricula);
     
         if (idCursoMatricula != -1) {
             alunoDao.matricularAlunoNoCurso(alunoAutenticado.getId(), idCursoMatricula);

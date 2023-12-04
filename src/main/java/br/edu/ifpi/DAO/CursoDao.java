@@ -226,7 +226,7 @@ public class CursoDao {
 
     public int obterIdPeloNome(String nomeCurso) {
         int idCurso = -1;
-        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://seu-endereco.supabase.co/seu-banco", "seu-usuario", "sua-senha")) {
+        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://db.wchdzdurkzceccavsubp.supabase.co:5432/", "postgres", "Cocarato05!")) {
             String query = "SELECT id FROM cursos WHERE nome = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, nomeCurso);
