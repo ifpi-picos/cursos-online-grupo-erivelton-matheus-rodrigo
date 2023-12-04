@@ -124,4 +124,24 @@ public class AlunoDao {
         }
         return novoId;
     }
+
+    public void matricularAlunoNoCurso(int idAluno, int idCurso) throws SQLException {
+        String sql = "INSERT INTO aluno_curso (id_aluno, id_curso) VALUES (?, ?)";
+        
+        try (PreparedStatement ps = Conexao.prepareStatement(sql)) {
+            ps.setInt(1, idAluno);
+            ps.setInt(2, idCurso);
+            ps.executeUpdate();
+        }
+    }
+
+    public void desmatricularAlunoDoCurso(int idAluno, int idCurso) throws SQLException {
+        String sql = "DELETE FROM aluno_curso WHERE id_aluno = ? AND id_curso = ?";
+        
+        try (PreparedStatement ps = Conexao.prepareStatement(sql)) {
+            ps.setInt(1, idAluno);
+            ps.setInt(2, idCurso);
+            ps.executeUpdate();
+        }
+    }
 }

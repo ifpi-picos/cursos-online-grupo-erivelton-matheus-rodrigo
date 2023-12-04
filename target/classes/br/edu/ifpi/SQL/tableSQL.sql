@@ -28,3 +28,10 @@ CREATE TABLE professor_curso (
     id_professor INTEGER REFERENCES professores(id),
     nome_curso VARCHAR(100)
 );
+
+CREATE TABLE aluno_curso (
+    id SERIAL PRIMARY KEY,
+    id_aluno INTEGER REFERENCES alunos(id),
+    id_curso INTEGER REFERENCES cursos(id),
+    UNIQUE (id_aluno, id_curso)
+);

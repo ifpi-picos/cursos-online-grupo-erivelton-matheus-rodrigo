@@ -44,7 +44,6 @@ public class Alunos {
         return cursos;
     }
 
-    // Renomeado o parâmetro para evitar ambiguidade com o atributo cursos
     public void setCursos(List<Cursos> novosCursos){
         this.cursos = novosCursos;
     }
@@ -54,15 +53,13 @@ public class Alunos {
     }
 
     public void adicionarNota(String cursoNome, double nota) {
-        // Implemente a lógica para adicionar a nota do curso especificado pelo nome
+        
     }
 
     public List<Double> getNotas() {
-        // Implemente a lógica para retornar as notas do aluno
         return null;
     }
 
     public void removerCurso(String nomeCurso) {
-        // Implemente a lógica para remover um curso pelo nome
     }
 }

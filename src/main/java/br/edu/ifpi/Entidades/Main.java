@@ -144,6 +144,7 @@ public class Main {
             System.out.println("5 - Adicionar Aluno a um Curso");
             System.out.println("6 - Registrar Nota");
             System.out.println("7 - Ver Estatísticas de Desempenho");
+            System.out.println("8 - Matrícula do Aluno");
             System.out.println("0 - Voltar ao Menu Principal");
             System.out.print("Escolha uma opção: ");
             opcao = scanner.nextInt();
@@ -193,6 +194,13 @@ public class Main {
                     break;
                 case 7:
                     exibirEstatisticasDesempenho((CursoDao) cursoDao, alunoAutenticado, "Nome do Curso");
+                    break;
+                case 8:
+                    try {
+                        matricularDesmatricularAluno(scanner, alunoDao, alunoAutenticado, cursoDao);
+                    } catch (SQLException e) {
+                        System.out.println("Erro ao executar operação de matrícula/desmatrícula: " + e.getMessage());
+                    }
                     break;
                 case 0:
                     System.out.println("Voltando para o Menu Principal");
@@ -421,4 +429,58 @@ private static void cadastrarCurso(Scanner scanner, CursoDao cursoDao) {
             System.out.println("O curso informado não existe.");
         }
     }    
+
+    private static void matricularDesmatricularAluno(Scanner scanner, AlunoDao alunoDao, Alunos alunoAutenticado, Object cursoDao) throws SQLException {
+        System.out.println("***** Matrícula e Desmatrícula em Cursos *****");
+        System.out.println("1 - Matricular em Curso");
+        System.out.println("2 - Desmatricular de Curso");
+        System.out.println("0 - Voltar ao Menu Principal");
+        System.out.print("Escolha uma opção: ");
+        int opcaoMatricula = scanner.nextInt();
+    
+        switch (opcaoMatricula) {
+            case 1:
+                matricularAluno(scanner, alunoDao, alunoAutenticado, cursoDao);
+                break;
+            case 2:
+                desmatricularAluno(scanner, alunoDao, alunoAutenticado, cursoDao);
+                break;
+            case 0:
+                System.out.println("Retornando ao Menu Principal...");
+                break;
+            default:
+                System.out.println("Opção inválida! Escolha uma opção válida.");
+                break;
+        }
+    }
+    
+    private static void matricularAluno(Scanner scanner, AlunoDao alunoDao, Alunos alunoAutenticado, Object cursoDao) throws SQLException {
+        scanner.nextLine();
+        System.out.println("Digite o nome do curso que deseja se matricular:");
+        String nomeCursoMatricula = scanner.nextLine();
+    
+        int idCursoMatricula = ((CursoDao) cursoDao).obterIdPeloNome(nomeCursoMatricula);
+    
+        if (idCursoMatricula != -1) {
+            alunoDao.matricularAlunoNoCurso(alunoAutenticado.getId(), idCursoMatricula);
+            System.out.println("Aluno matriculado com sucesso no curso: " + nomeCursoMatricula);
+        } else {
+            System.out.println("Curso não encontrado. Verifique o nome e tente novamente.");
+        }
+    }
+    
+    private static void desmatricularAluno(Scanner scanner, AlunoDao alunoDao, Alunos alunoAutenticado, Object cursoDao) throws SQLException {
+        scanner.nextLine();
+        System.out.println("Digite o nome do curso que deseja se desmatricular:");
+        String nomeCursoDesmatricula = scanner.nextLine();
+    
+        int idCursoDesmatricula = ((CursoDao) cursoDao).obterIdPeloNome(nomeCursoDesmatricula);
+    
+        if (idCursoDesmatricula != -1) {
+            alunoDao.desmatricularAlunoDoCurso(alunoAutenticado.getId(), idCursoDesmatricula);
+            System.out.println("Aluno desmatriculado com sucesso do curso: " + nomeCursoDesmatricula);
+        } else {
+            System.out.println("Curso não encontrado. Verifique o nome e tente novamente.");
+        }
+    }
 }

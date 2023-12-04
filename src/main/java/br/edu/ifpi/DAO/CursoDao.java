@@ -4,6 +4,7 @@ import br.edu.ifpi.Entidades.Cursos;
 import br.edu.ifpi.Entidades.Professor;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -221,5 +222,25 @@ public class CursoDao {
     }
 
     public void registrarAlunoNoCurso(int idCurso, int id) {
+    }
+
+    public int obterIdPeloNome(String nomeCurso) {
+        int idCurso = -1;
+        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://seu-endereco.supabase.co/seu-banco", "seu-usuario", "sua-senha")) {
+            String query = "SELECT id FROM cursos WHERE nome = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, nomeCurso);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                idCurso = resultSet.getInt("id");
+            }
+
+            resultSet.close();
+            preparedStatement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return idCurso;
     }
 }
