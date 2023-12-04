@@ -1,6 +1,7 @@
 package br.edu.ifpi.DAO;
 
 import br.edu.ifpi.Entidades.Cursos;
+import br.edu.ifpi.Entidades.Professor;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -201,6 +202,18 @@ public class CursoDao {
             throw new IllegalStateException("A conexão com o banco de dados não foi inicializada corretamente.");
         }
         return connection;
+    }
+
+    public void adicionarProfessorNoCurso(Professor professor, String nomeCurso) {
+        String sql = "INSERT INTO professor_curso (id_professor, nome_curso) VALUES (?, ?)";
+        try (PreparedStatement stmt = Conexao.prepareStatement(sql)) {
+            stmt.setInt(1, professor.getId());
+            stmt.setString(2, nomeCurso);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Erro ao adicionar professor ao curso: " + e.getMessage());
+        }
     }
 
     public int obterIdCurso(String nomeCurso) {

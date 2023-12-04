@@ -22,3 +22,9 @@ CREATE TABLE turma (
     nome_curso VARCHAR(100) REFERENCES cursos(nome),
     nota_aluno FLOAT
 );
+
+CREATE TABLE professor_curso (
+    id SERIAL PRIMARY KEY,
+    id_professor INTEGER REFERENCES professores(id),
+    nome_curso VARCHAR(100)
+);

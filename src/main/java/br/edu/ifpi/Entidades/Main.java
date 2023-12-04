@@ -413,12 +413,12 @@ private static void cadastrarCurso(Scanner scanner, CursoDao cursoDao) {
     private static void adicionarProfessorCurso(Scanner scanner, ProfessorDao professorDao, Professor professorAutenticado, CursoDao cursoDao) {
         System.out.println("Digite o nome do curso:");
         String nomeCurso = scanner.next();
-        
+    
         if (cursoDao.verificarExistenciaCurso(nomeCurso)) {
-            cursoDao.atualizarCurso(nomeCurso, "Ativo");
+            cursoDao.adicionarProfessorNoCurso(professorAutenticado, nomeCurso);
             System.out.println("Professor adicionado ao curso '" + nomeCurso + "' com sucesso!");
         } else {
             System.out.println("O curso informado não existe.");
         }
-    }
+    }    
 }

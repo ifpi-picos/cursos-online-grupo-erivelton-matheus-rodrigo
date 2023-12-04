@@ -2,6 +2,7 @@ package br.edu.ifpi.DAO;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -32,5 +33,10 @@ public class Conexao {
         } catch (SQLException e) {
             System.out.println("Erro ao conectar ao Supabase: " + e.getMessage());
         }
+    }
+
+    public static PreparedStatement prepareStatement(String sql) throws SQLException {
+        Connection connection = DriverManager.getConnection("jdbc:postgresql://db.wchdzdurkzceccavsubp.supabase.co:5432/postgres?user=postgres&password=Cocarato05!");
+        return connection.prepareStatement(sql);
     }
 }
