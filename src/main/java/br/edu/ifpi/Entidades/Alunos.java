@@ -47,19 +47,4 @@ public class Alunos {
     public void setCursos(List<Cursos> novosCursos){
         this.cursos = novosCursos;
     }
-
-    public void adicionarCurso(Cursos curso) {
-        this.cursos.add(curso);
-    }
-
-    public void adicionarNota(String cursoNome, double nota) {
-        
-    }
-
-    public List<Double> getNotas() {
-        return null;
-    }
-
-    public void removerCurso(String nomeCurso) {
-    }
 }
