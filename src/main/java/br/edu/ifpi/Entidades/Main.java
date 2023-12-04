@@ -141,9 +141,8 @@ public class Main {
             System.out.println("2 - Listar Alunos");
             System.out.println("3 - Atualizar Aluno");
             System.out.println("4 - Deletar Aluno");
-            System.out.println("5 - Adicionar Aluno a um Curso");
-            System.out.println("7 - Ver Estatísticas de Desempenho");
-            System.out.println("8 - Matrícula do Aluno");
+            System.out.println("5 - Ver Estatísticas de Desempenho");
+            System.out.println("6 - Matrícula do Aluno");
             System.out.println("0 - Voltar ao Menu Principal");
             System.out.print("Escolha uma opção: ");
             opcao = scanner.nextInt();
@@ -186,12 +185,9 @@ public class Main {
                     alunoDao.deletar(idAlunoDeletar);
                     break;
                 case 5:
-                    adicionarAlunoCurso(scanner, alunoDao, alunoAutenticado, (CursoDao) cursoDao);
-                    break;
-                case 6:
                     exibirEstatisticasDesempenho((CursoDao) cursoDao, alunoAutenticado, "Nome do Curso");
                     break;
-                case 7:
+                case 6:
                     try {
                         matricularDesmatricularAluno(scanner, alunoDao, alunoAutenticado, cursoDao);
                     } catch (SQLException e) {
@@ -381,20 +377,7 @@ private static void cadastrarCurso(Scanner scanner, CursoDao cursoDao) {
     private static void exibirNotaMediaGeral(CursoDao cursoDao) {
         double media = cursoDao.calcularNotaMediaCurso(null);
         System.out.println("Nota média geral dos alunos no curso: " + media);
-    }    
-
-    private static void adicionarAlunoCurso(Scanner scanner, AlunoDao alunoDao, Alunos alunoAutenticado, CursoDao cursoDao) {
-        System.out.println("Digite o nome do curso:");
-        String nomeCurso = scanner.next();
-        
-        if (cursoDao.verificarExistenciaCurso(nomeCurso)) {
-            int idCurso = cursoDao.obterIdCurso(nomeCurso);
-            cursoDao.registrarAlunoNoCurso(idCurso, alunoAutenticado.getId()); 
-            System.out.println("Aluno matriculado no curso '" + nomeCurso + "' com sucesso!");
-        } else {
-            System.out.println("O curso informado não existe.");
-        }
-    }    
+    }       
     
     private static void adicionarProfessorCurso(Scanner scanner, ProfessorDao professorDao, Professor professorAutenticado, CursoDao cursoDao) {
         System.out.println("Digite o nome do curso:");
