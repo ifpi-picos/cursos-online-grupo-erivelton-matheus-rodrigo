@@ -7,7 +7,7 @@ public class Alunos {
     protected String nome;
     private int id;
     protected String email;
-    private List<Cursos> cursos;
+    private List<Cursos> cursos; 
 
     public Alunos(String nome, int id, String email) {
         this.nome = nome;
@@ -44,20 +44,25 @@ public class Alunos {
         return cursos;
     }
 
-    public void setCurso(List<Cursos> cursos){
-        this.cursos = cursos;
+    // Renomeado o parâmetro para evitar ambiguidade com o atributo cursos
+    public void setCursos(List<Cursos> novosCursos){
+        this.cursos = novosCursos;
     }
 
-    public void adicionarCurso(String string) {
+    public void adicionarCurso(Cursos curso) {
+        this.cursos.add(curso);
     }
 
-    public void adicionarNota(String string, double d) {
+    public void adicionarNota(String cursoNome, double nota) {
+        // Implemente a lógica para adicionar a nota do curso especificado pelo nome
     }
 
-    public Object getNotas() {
+    public List<Double> getNotas() {
+        // Implemente a lógica para retornar as notas do aluno
         return null;
     }
 
     public void removerCurso(String nomeCurso) {
+        // Implemente a lógica para remover um curso pelo nome
     }
 }

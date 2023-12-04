@@ -1,26 +1,16 @@
 package br.edu.ifpi.DAO;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import br.edu.ifpi.Entidades.Alunos;
+
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.edu.ifpi.Entidades.Alunos;
-
 public class AlunoDao {
-    private Connection connection;
+    private final Connection connection;
 
     public AlunoDao(Connection conexao) {
-        String supabaseUrl = "jdbc:postgresql://db.wchdzdurkzceccavsubp.supabase.co:5432/postgres?user=postgres&password=Cocarato05!";
-
-        try {
-            this.connection = DriverManager.getConnection(supabaseUrl);
-        } catch (SQLException e) {
-            System.out.println("Erro ao conectar ao Supabase: " + e.getMessage());
-        }
+        this.connection = conexao;
     }
 
     public void close() {
@@ -39,11 +29,11 @@ public class AlunoDao {
             ps.setString(1, aluno.getNome());
             ps.setString(2, aluno.getEmail());
             int affectedRows = ps.executeUpdate();
-    
+
             if (affectedRows == 0) {
                 throw new SQLException("A inserção falhou, nenhum registro foi criado.");
             }
-    
+
             try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     aluno.setId(generatedKeys.getInt(1));
@@ -55,8 +45,8 @@ public class AlunoDao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return 0; 
-    }    
+        return 0;
+    }
 
     public Alunos buscarPorId(int id) {
         Alunos aluno = null;

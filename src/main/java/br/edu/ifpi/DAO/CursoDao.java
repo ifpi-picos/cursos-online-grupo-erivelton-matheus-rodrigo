@@ -1,5 +1,7 @@
 package br.edu.ifpi.DAO;
 
+import br.edu.ifpi.Entidades.Cursos;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,86 +9,84 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.edu.ifpi.Entidades.Cursos;
-
 public class CursoDao {
-    private Connection connection;
+    private final Connection connection;
+    private static final String INSERT_CURSO = "INSERT INTO cursos (nome, status, carga_horaria) VALUES (?, ?, ?)";
+    private static final String UPDATE_CURSO_STATUS = "UPDATE cursos SET status = ? WHERE nome = ?";
+    private static final String SELECT_ALL_CURSOS = "SELECT * FROM cursos";
+    private static final String DELETE_CURSO = "DELETE FROM cursos WHERE nome = ?";
+    private static final String SELECT_CURSO_BY_NOME = "SELECT * FROM cursos WHERE nome = ?";
 
     public CursoDao(Connection connection) {
         this.connection = connection;
     }
 
     public void cadastrarCurso(String nome, String status, int cargaHoraria) {
-        String sql = "INSERT INTO cursos (nome, status, carga_horaria) VALUES (?, ?, ?)";
-        try (PreparedStatement statement = getConnection().prepareStatement(sql)) {
+        try (PreparedStatement statement = connection.prepareStatement(INSERT_CURSO)) {
             statement.setString(1, nome);
             statement.setString(2, status);
             statement.setInt(3, cargaHoraria);
 
             statement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Erro ao cadastrar curso: " + e.getMessage());
+            throw new RuntimeException("Erro ao cadastrar curso: " + e.getMessage());
         }
     }
 
     public void atualizarCurso(String nome, String novoStatus) {
-        String sql = "UPDATE cursos SET status = ? WHERE nome = ?";
-        try (PreparedStatement statement = getConnection().prepareStatement(sql)) {
+        try (PreparedStatement statement = connection.prepareStatement(UPDATE_CURSO_STATUS)) {
             statement.setString(1, novoStatus);
             statement.setString(2, nome);
 
             statement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Erro ao atualizar curso: " + e.getMessage());
+            throw new RuntimeException("Erro ao atualizar curso: " + e.getMessage());
         }
     }
 
     public List<Cursos> listarCursosDisponiveis() {
         List<Cursos> cursos = new ArrayList<>();
-        String sql = "SELECT * FROM cursos";
-        try (PreparedStatement statement = getConnection().prepareStatement(sql);
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_ALL_CURSOS);
              ResultSet resultSet = statement.executeQuery()) {
 
             while (resultSet.next()) {
                 String nome = resultSet.getString("nome");
                 String status = resultSet.getString("status");
                 int cargaHoraria = resultSet.getInt("carga_horaria");
-                Cursos curso = new Cursos(nome, status, cargaHoraria);
+                Cursos curso = new Cursos(cargaHoraria, nome, status, cargaHoraria);
                 cursos.add(curso);
             }
         } catch (SQLException e) {
-            System.out.println("Erro ao listar cursos disponíveis: " + e.getMessage());
+            throw new RuntimeException("Erro ao listar cursos disponíveis: " + e.getMessage());
         }
         return cursos;
     }
 
     public void deletarCurso(String nome) {
-        String sql = "DELETE FROM cursos WHERE nome = ?";
-        try (PreparedStatement statement = getConnection().prepareStatement(sql)) {
+        try (PreparedStatement statement = connection.prepareStatement(DELETE_CURSO)) {
             statement.setString(1, nome);
             statement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Erro ao deletar curso: " + e.getMessage());
+            throw new RuntimeException("Erro ao deletar curso: " + e.getMessage());
         }
     }
 
     public Cursos buscarCursoPorNome(String nome) {
-        String sql = "SELECT * FROM cursos WHERE nome = ?";
-        try (PreparedStatement statement = getConnection().prepareStatement(sql)) {
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_CURSO_BY_NOME)) {
             statement.setString(1, nome);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     String status = resultSet.getString("status");
                     int cargaHoraria = resultSet.getInt("carga_horaria");
-                    return new Cursos(nome, status, cargaHoraria);
+                    return new Cursos(cargaHoraria, nome, status, cargaHoraria);
                 }
             }
         } catch (SQLException e) {
-            System.out.println("Erro ao buscar curso por nome: " + e.getMessage());
+            throw new RuntimeException("Erro ao buscar curso por nome: " + e.getMessage());
         }
         return null;
     }
-
+    
     public boolean verificarExistenciaCurso(String nome) {
         String sql = "SELECT * FROM cursos WHERE nome = ?";
         try (PreparedStatement statement = getConnection().prepareStatement(sql)) {
@@ -100,11 +100,11 @@ public class CursoDao {
         return false;
     }
 
-    public void registrarNotaAluno(String nomeCurso, String nomeAluno, double nota) {
+    public void registrarNotaAluno(String nomeCurso, int i, double nota) {
         String sql = "INSERT INTO notas (curso_nome, aluno_nome, nota) VALUES (?, ?, ?)";
         try (PreparedStatement statement = getConnection().prepareStatement(sql)) {
             statement.setString(1, nomeCurso);
-            statement.setString(2, nomeAluno);
+            statement.setLong(2, i);
             statement.setDouble(3, nota);
 
             statement.executeUpdate();
@@ -201,5 +201,12 @@ public class CursoDao {
             throw new IllegalStateException("A conexão com o banco de dados não foi inicializada corretamente.");
         }
         return connection;
+    }
+
+    public int obterIdCurso(String nomeCurso) {
+        return 0;
+    }
+
+    public void registrarAlunoNoCurso(int idCurso, int id) {
     }
 }
