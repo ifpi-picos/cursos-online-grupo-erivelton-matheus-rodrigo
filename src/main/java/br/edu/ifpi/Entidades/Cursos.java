@@ -10,7 +10,6 @@ public class Cursos {
         this.status = status;
         this.cargaHoraria = cargaHoraria;
     }
-
     public String getNome() {
         return nome;
     }

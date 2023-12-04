@@ -5,7 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import br.edu.ifpi.Entidades.Professor;
 
@@ -119,4 +121,41 @@ public class ProfessorDao {
         }
         return novoId;
     }   
+
+    public List<Professor> listarProfessoresECursos() {
+        List<Professor> professores = new ArrayList<>();
+    
+        try {
+            String sql = "SELECT p.id AS id_professor, p.nome AS nome_professor, p.email AS email_professor, c.nome AS nome_curso " +
+                         "FROM professores p " +
+                         "LEFT JOIN professor_curso pc ON p.id = pc.id_professor " +
+                         "LEFT JOIN cursos c ON pc.id_curso = c.id";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            ResultSet resultSet = statement.executeQuery();
+    
+            Map<Integer, Professor> professorMap = new HashMap<>();
+    
+            while (resultSet.next()) {
+                int idProfessor = resultSet.getInt("id_professor");
+                String nomeProfessor = resultSet.getString("nome_professor");
+                String emailProfessor = resultSet.getString("email_professor");
+                String nomeCurso = resultSet.getString("nome_curso");
+    
+                if (!professorMap.containsKey(idProfessor)) {
+                    Professor professor = new Professor(nomeProfessor, idProfessor, emailProfessor);
+                    professorMap.put(idProfessor, professor);
+                }
+    
+                Professor professor = professorMap.get(idProfessor);
+                if (nomeCurso != null) {
+                    professor.adicionarCurso(nomeCurso);
+                }
+            }
+    
+            professores.addAll(professorMap.values());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return professores;
+    }    
 }

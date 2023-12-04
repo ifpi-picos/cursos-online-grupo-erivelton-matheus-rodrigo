@@ -224,7 +224,7 @@ public class Main {
         int opcao;
         do {
             System.out.println("***** Menu Professor *****");
-            System.out.println("1 - Listar Professores");
+            System.out.println("1 - Listar Professores e Cursos");
             System.out.println("2 - Inserir Professor");
             System.out.println("3 - Atualizar Professor");
             System.out.println("4 - Deletar Professor");
@@ -235,13 +235,23 @@ public class Main {
 
             switch (opcao) {
                 case 1:
-                    List<Professor> professores = professorDao.listarProfessores();
-                    if (professores.isEmpty()) {
-                        System.out.println("Não há professores cadastrados.");
+                    List<Professor> professoresComCursos = professorDao.listarProfessoresECursos();
+                    if (professoresComCursos.isEmpty()) {
+                        System.out.println("Não há professores cadastrados com cursos associados.");
                     } else {
-                        System.out.println("***** Lista de Professores *****");
-                        for (Professor professor : professores) {
+                        System.out.println("***** Professores e Cursos Associados *****");
+                        for (Professor professor : professoresComCursos) {
                             System.out.println("ID: " + professor.getId() + ", Nome: " + professor.getNome() + ", Email: " + professor.getEmail());
+                            List<String> cursos = professor.getCursos();
+                            if (cursos.isEmpty()) {
+                                System.out.println("O professor não está associado a nenhum curso.");
+                            } else {
+                                System.out.println("Cursos do Professor:");
+                                for (String curso : cursos) {
+                                    System.out.println("- " + curso);
+                                }
+                            }
+                            System.out.println("--------------------------------------");
                         }
                     }
                     break;
@@ -396,8 +406,10 @@ private static void cadastrarCurso(Scanner scanner, CursoDao cursoDao) {
     }       
     
     private static void adicionarProfessorCurso(Scanner scanner, ProfessorDao professorDao, Professor professorAutenticado, CursoDao cursoDao) {
+        scanner.nextLine();
+    
         System.out.println("Digite o nome do curso:");
-        String nomeCurso = scanner.next();
+        String nomeCurso = scanner.nextLine();
     
         if (cursoDao.verificarExistenciaCurso(nomeCurso)) {
             cursoDao.adicionarProfessorNoCurso(professorAutenticado, nomeCurso);
@@ -405,7 +417,8 @@ private static void cadastrarCurso(Scanner scanner, CursoDao cursoDao) {
         } else {
             System.out.println("O curso informado não existe.");
         }
-    }    
+    }
+       
 
     private static void matricularDesmatricularAluno(Scanner scanner, AlunoDao alunoDao, Alunos alunoAutenticado, CursoDao cursoDao) throws SQLException {
         System.out.println("***** Matrícula e Desmatrícula em Cursos *****");

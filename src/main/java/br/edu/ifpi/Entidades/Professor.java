@@ -8,6 +8,7 @@ public class Professor {
     private String nome;
     private String email;
     private List<Cursos> cursosMinistrados;
+    private List<String> cursos;
 
     public Professor(String nome, int id, String email){
         this.id = id;
@@ -58,7 +59,14 @@ public class Professor {
         return "ID: " + id + " | Nome: " + nome + " | Email: " + email + " | Cursos Ministrados: " + cursosMinistrados;
     }
 
-    public List<Professor> getCursos() {
-        return null;
+    public List<String> getCursos() {
+        if (cursos == null) {
+            cursos = new ArrayList<>();
+        return cursos;
+    }
+        return cursos;
+}
+
+    public void adicionarCurso(String nomeCurso) {
     }
 }
