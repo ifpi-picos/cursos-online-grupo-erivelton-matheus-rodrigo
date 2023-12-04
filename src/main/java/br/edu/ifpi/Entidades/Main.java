@@ -146,6 +146,7 @@ public class Main {
             System.out.println("7 - Exibir Cursos Concluídos");
             System.out.println("8 - Exibir Cursos Matriculados");
             System.out.println("9 - Exibir Porcentagem de Aproveitamento nos Cursos");
+            System.out.println("10 - Perfil do Aluno");
             System.out.println("0 - Voltar ao Menu Principal");
             System.out.print("Escolha uma opção: ");
             opcao = scanner.nextInt();
@@ -205,6 +206,9 @@ public class Main {
                     break;
                 case 9:
                     exibirPorcentagemAproveitamentoAluno(cursoDao, alunoAutenticado);
+                    break;
+                case 10:
+                    visualizarPerfilAluno(alunoAutenticado, alunoDao, cursoDao);
                     break;
                 case 0:
                     System.out.println("Voltando para o Menu Principal");
@@ -505,4 +509,22 @@ private static void cadastrarCurso(Scanner scanner, CursoDao cursoDao) {
         double aproveitamento = cursoDao.calcularPorcentagemAproveitamentoAluno(alunoAutenticado.getId());
         System.out.println("Porcentagem de aproveitamento nos cursos: " + aproveitamento + "%");
     }
+
+    private static void visualizarPerfilAluno(Alunos aluno, AlunoDao alunoDao, CursoDao cursoDao) throws SQLException {
+        System.out.println("***** Perfil do Aluno *****");
+        System.out.println("ID do Aluno: " + aluno.getId());
+        System.out.println("Nome do Aluno: " + aluno.getNome());
+        System.out.println("Email do Aluno: " + aluno.getEmail());
+    
+        List<Cursos> cursosMatriculados = cursoDao.obterCursosMatriculadosAluno(aluno.getId());
+    
+        if (cursosMatriculados.isEmpty()) {
+            System.out.println("O aluno não está matriculado em nenhum curso.");
+        } else {
+            System.out.println("***** Cursos Matriculados *****");
+            for (Cursos curso : cursosMatriculados) {
+                System.out.println("Nome: " + curso.getNome() + ", Status: Matriculado");
+            }
+        }
+    }    
 }
