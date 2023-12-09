@@ -149,9 +149,11 @@ public class AlunoDao {
     public List<Cursos> obterCursosConcluidos(int idAluno) throws SQLException {
         List<Cursos> cursosConcluidos = new ArrayList<>();
         
-        String sql = "SELECT c.* FROM cursos c JOIN cursos_alunos ac ON c.id = ac.id_curso WHERE ac.id_aluno = ? AND ac.status_curso = 'concluído'";
+        String sql = "SELECT c.* FROM cursos c " +
+                     "JOIN aluno_curso ac ON c.id = ac.id_curso " +
+                     "WHERE ac.id_aluno = ? AND ac.status_curso = 'concluído'";
         
-        try (PreparedStatement stmt = Conexao.prepareStatement(sql)) {
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, idAluno);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
@@ -168,27 +170,28 @@ public class AlunoDao {
         
         return cursosConcluidos;
     }    
-
-    public List<Cursos> obterCursosMatriculados(int idAluno) throws SQLException {
-        List<Cursos> cursosMatriculados = new ArrayList<>();
+    
+    public List<Alunos> obterAlunosMatriculadosNoCurso(int idCurso) throws SQLException {
+        List<Alunos> alunosMatriculados = new ArrayList<>();
+    
+        String sql = "SELECT alunos.id, alunos.nome, alunos.email " +
+                     "FROM alunos " +
+                     "JOIN curso_aluno ON alunos.id = curso_aluno.id_aluno " +
+                     "WHERE curso_aluno.id_curso = ?";
         
-        String sql = "SELECT c.* FROM cursos c JOIN aluno_curso ac ON c.nome = ac.nome_curso WHERE ac.id_aluno = ? AND ac.status = 'matriculado'";
-        
-        try (PreparedStatement stmt = Conexao.prepareStatement(sql)) {
-            stmt.setInt(1, idAluno);
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, idCurso);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    Cursos curso = new Cursos(
-                        rs.getInt("id"),
-                        rs.getString("nome"),
-                        rs.getString("status"),
-                        rs.getInt("carga_horaria")
-                    );
-                    cursosMatriculados.add(curso);
+                    int id = rs.getInt("id");
+                    String nome = rs.getString("nome");
+                    String email = rs.getString("email");
+                    Alunos aluno = new Alunos(nome, id, email);
+                    alunosMatriculados.add(aluno);
                 }
             }
         }
-        
-        return cursosMatriculados;
-    }
+    
+        return alunosMatriculados;
+    }      
 }

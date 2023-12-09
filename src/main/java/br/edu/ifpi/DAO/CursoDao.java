@@ -103,7 +103,7 @@ public class CursoDao {
     }
 
     public void registrarNotaAluno(String nomeCurso, int i, double nota) {
-        String sql = "INSERT INTO notas (curso_nome, aluno_nome, nota) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO notas (nome, aluno_nome, nota) VALUES (?, ?, ?)";
         try (PreparedStatement statement = getConnection().prepareStatement(sql)) {
             statement.setString(1, nomeCurso);
             statement.setLong(2, i);
@@ -116,7 +116,7 @@ public class CursoDao {
     }
 
     public double calcularNotaMediaCurso(String nomeCurso) {
-        String sql = "SELECT AVG(nota) AS media FROM notas WHERE curso_nome = ?";
+        String sql = "SELECT AVG(nota) AS media FROM notas WHERE nome = ?";
         try (PreparedStatement statement = getConnection().prepareStatement(sql)) {
             statement.setString(1, nomeCurso);
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -131,7 +131,7 @@ public class CursoDao {
     }
 
     public int quantidadeAlunosMatriculados(String nomeCurso) {
-        String sql = "SELECT COUNT(*) AS total FROM notas WHERE curso_nome = ?";
+        String sql = "SELECT COUNT(*) AS total FROM notas WHERE nome = ?";
         try (PreparedStatement statement = getConnection().prepareStatement(sql)) {
             statement.setString(1, nomeCurso);
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -146,7 +146,7 @@ public class CursoDao {
     }
 
     public double calcularPorcentagemAprovados(String nomeCurso) {
-        String sql = "SELECT COUNT(*) AS aprovados FROM notas WHERE curso_nome = ? AND nota >= 7";
+        String sql = "SELECT COUNT(*) AS aprovados FROM notas WHERE nome = ? AND nota >= 7";
         try (PreparedStatement statement = getConnection().prepareStatement(sql)) {
             statement.setString(1, nomeCurso);
             try (ResultSet resultSet = statement.executeQuery()) {

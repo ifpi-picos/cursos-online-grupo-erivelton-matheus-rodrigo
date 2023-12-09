@@ -319,10 +319,10 @@ public class Main {
                 listarCursos(cursoDao);
                 break;
             case 4:
-                exibirQuantidadeAlunosMatriculados(cursoDao);
+                exibirQuantidadeAlunosMatriculados(scanner, cursoDao);
                 break;
             case 5:
-                exibirNotaMediaGeral(cursoDao);
+                exibirNotaMediaGeral(scanner, cursoDao);
                 break;
             case 6:
                 exibirPorcentagemAprovados(scanner, cursoDao);
@@ -395,14 +395,24 @@ private static void cadastrarCurso(Scanner scanner, CursoDao cursoDao) {
         System.out.println("Porcentagem de alunos reprovados: " + porcentagemReprovados + "%");
     }
 
-    private static void exibirQuantidadeAlunosMatriculados(CursoDao cursoDao) {
-        int quantidadeAlunos = cursoDao.quantidadeAlunosMatriculados(null);
-        System.out.println("Quantidade de alunos matriculados no curso: " + quantidadeAlunos);
-    }    
+    private static void exibirQuantidadeAlunosMatriculados(Scanner scanner, CursoDao cursoDao) {
+        scanner.nextLine();
     
-    private static void exibirNotaMediaGeral(CursoDao cursoDao) {
-        double media = cursoDao.calcularNotaMediaCurso(null);
-        System.out.println("Nota média geral dos alunos no curso: " + media);
+        System.out.println("Digite o nome do curso:");
+        String nomeCurso = scanner.nextLine();
+    
+        int quantidadeAlunos = cursoDao.quantidadeAlunosMatriculados(nomeCurso);
+        System.out.println("Quantidade de alunos matriculados no curso '" + nomeCurso + "': " + quantidadeAlunos);
+    } 
+    
+    private static void exibirNotaMediaGeral(Scanner scanner, CursoDao cursoDao) {
+        scanner.nextLine();
+    
+        System.out.println("Digite o nome do curso:");
+        String nomeCurso = scanner.nextLine();
+    
+        double media = cursoDao.calcularNotaMediaCurso(nomeCurso);
+        System.out.println("Nota média geral dos alunos no curso '" + nomeCurso + "': " + media);
     }       
     
     private static void adicionarProfessorCurso(Scanner scanner, ProfessorDao professorDao, Professor professorAutenticado, CursoDao cursoDao) {
