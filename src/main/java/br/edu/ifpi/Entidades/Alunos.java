@@ -47,4 +47,8 @@ public class Alunos {
     public void setCursos(List<Cursos> novosCursos){
         this.cursos = novosCursos;
     }
+
+    public void adicionarCurso(Cursos cursos2) {
+        this.cursos.add(cursos2);
+    }
 }

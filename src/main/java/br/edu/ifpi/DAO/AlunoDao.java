@@ -169,29 +169,29 @@ public class AlunoDao {
         }
         
         return cursosConcluidos;
-    }    
+    }       
     
     public List<Alunos> obterAlunosMatriculadosNoCurso(int idCurso) throws SQLException {
         List<Alunos> alunosMatriculados = new ArrayList<>();
-    
-        String sql = "SELECT alunos.id, alunos.nome, alunos.email " +
-                     "FROM alunos " +
-                     "JOIN curso_aluno ON alunos.id = curso_aluno.id_aluno " +
-                     "WHERE curso_aluno.id_curso = ?";
+        
+        String sql = "SELECT a.* FROM alunos a " +
+                     "JOIN aluno_curso ac ON a.id = ac.id_aluno " +
+                     "WHERE ac.id_curso = ?";
         
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, idCurso);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    int id = rs.getInt("id");
-                    String nome = rs.getString("nome");
-                    String email = rs.getString("email");
-                    Alunos aluno = new Alunos(nome, id, email);
+                    Alunos aluno = new Alunos(
+                        rs.getString("nome"),
+                        rs.getInt("id"),
+                        rs.getString("email")
+                    );
                     alunosMatriculados.add(aluno);
                 }
             }
         }
-    
+        
         return alunosMatriculados;
-    }      
+    }            
 }

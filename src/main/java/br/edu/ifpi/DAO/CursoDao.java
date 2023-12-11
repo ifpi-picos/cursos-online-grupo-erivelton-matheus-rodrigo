@@ -116,6 +116,7 @@ public class CursoDao {
     }
 
     public double calcularNotaMediaCurso(String nomeCurso) {
+        double media = 0.0;
         String sql = "SELECT AVG(nota) AS media FROM notas WHERE nome = ?";
         try (PreparedStatement statement = getConnection().prepareStatement(sql)) {
             statement.setString(1, nomeCurso);
@@ -127,10 +128,11 @@ public class CursoDao {
         } catch (SQLException e) {
             System.out.println("Erro ao calcular média das notas do curso: " + e.getMessage());
         }
-        return 0.0;
+        return media;
     }
 
     public int quantidadeAlunosMatriculados(String nomeCurso) {
+        int quantidade = 0;
         String sql = "SELECT COUNT(*) AS total FROM notas WHERE nome = ?";
         try (PreparedStatement statement = getConnection().prepareStatement(sql)) {
             statement.setString(1, nomeCurso);
@@ -142,28 +144,34 @@ public class CursoDao {
         } catch (SQLException e) {
             System.out.println("Erro ao contar alunos matriculados no curso: " + e.getMessage());
         }
-        return 0;
+        return quantidade;
     }
 
     public double calcularPorcentagemAprovados(String nomeCurso) {
-        String sql = "SELECT COUNT(*) AS aprovados FROM notas WHERE nome = ? AND nota >= 7";
-        try (PreparedStatement statement = getConnection().prepareStatement(sql)) {
-            statement.setString(1, nomeCurso);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    int totalAlunos = quantidadeAlunosMatriculados(nomeCurso);
-                    int aprovados = resultSet.getInt("aprovados");
-                    return ((double) aprovados / totalAlunos) * 100;
+        double porcentagemAprovados = 0.0;
+        int totalAlunos = quantidadeAlunosMatriculados(nomeCurso);
+    
+        if (totalAlunos > 0) {
+            String sql = "SELECT COUNT(*) AS aprovados FROM notas WHERE nome = ? AND nota >= 7";
+            try (PreparedStatement statement = getConnection().prepareStatement(sql)) {
+                statement.setString(1, nomeCurso);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next()) {
+                        int aprovados = resultSet.getInt("aprovados");
+                        porcentagemAprovados = ((double) aprovados / totalAlunos) * 100;
+                    }
                 }
+            } catch (SQLException e) {
+                System.out.println("Erro ao calcular porcentagem de alunos aprovados: " + e.getMessage());
             }
-        } catch (SQLException e) {
-            System.out.println("Erro ao calcular porcentagem de alunos aprovados: " + e.getMessage());
         }
-        return 0.0;
-    }
+    
+        return porcentagemAprovados;
+    }    
 
     public double calcularPorcentagemReprovados(String nomeCurso) {
-        return 100 - calcularPorcentagemAprovados(nomeCurso);
+        double porcentagemReprovados = 0.0;
+        return porcentagemReprovados;
     }
 
     public void exibirEstatisticasDesempenho(String nomeCurso) {
@@ -262,9 +270,11 @@ public class CursoDao {
     public List<Cursos> obterCursosConcluidos(int idAluno) throws SQLException {
         List<Cursos> cursosConcluidos = new ArrayList<>();
         
-        String sql = "SELECT c.* FROM cursos c JOIN aluno_curso ac ON c.nome = ac.nome_curso WHERE ac.id_aluno = ? AND ac.status = 'concluído'";
+        String sql = "SELECT c.* FROM cursos c " +
+                     "JOIN aluno_curso ac ON c.id = ac.id_curso " +
+                     "WHERE ac.id_aluno = ? AND ac.status_curso = 'concluído'";
         
-        try (PreparedStatement stmt = Conexao.prepareStatement(sql)) {
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, idAluno);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
@@ -280,14 +290,16 @@ public class CursoDao {
         }
         
         return cursosConcluidos;
-    }
+    }    
 
     public List<Cursos> obterCursosMatriculadosAluno(int idAluno) throws SQLException {
         List<Cursos> cursosMatriculados = new ArrayList<>();
         
-        String sql = "SELECT c.* FROM cursos c JOIN cursos_alunos ac ON c.id = ac.id_curso WHERE ac.id_aluno = ? AND ac.status_curso = 'matriculado'";
+        String sql = "SELECT c.* FROM cursos c " +
+                     "JOIN aluno_curso ac ON c.id = ac.id_curso " +
+                     "WHERE ac.id_aluno = ? AND ac.status_curso = 'matriculado'";
         
-        try (PreparedStatement stmt = Conexao.prepareStatement(sql)) {
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, idAluno);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
@@ -303,9 +315,8 @@ public class CursoDao {
         }
         
         return cursosMatriculados;
-    }
+    }    
     
-
     public double calcularPorcentagemAproveitamentoAluno(int idAluno) throws SQLException {
         String sqlTotalCursos = "SELECT COUNT(*) FROM aluno_curso WHERE id_aluno = ?";
         String sqlCursosConcluidos = "SELECT COUNT(*) FROM aluno_curso WHERE id_aluno = ? AND status = 'concluído'";
